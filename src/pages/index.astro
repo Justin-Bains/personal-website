@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Certifications from '../components/Certifications.astro';
+import GitHubRepos from '../components/GitHubRepos.astro';
+
+const title = "Jashandeep Justin Bains - Network Engineer & Cloud Professional";
+const description = "Professional portfolio showcasing my networking, cloud, and software development certifications, projects, and experience. CCNA, AWS Certified, and more.";
+
+// Structured Data for SEO (JSON-LD)
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jashandeep Justin Bains",
+  "jobTitle": "Network Engineer",
+  "description": description,
+  "url": "https://jashandeepjustinbains.github.io/personal-website",
+  "sameAs": [
+    "https://github.com/JashandeepJustinBains",
+    "https://linkedin.com/in/jashandeepjustinbains"
+  ],
+  "knowsAbout": [
+    "Networking",
+    "Cloud Computing",
+    "AWS",
+    "Cisco",
+    "Network Security",
+    "Software Development"
+  ]
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- SEO Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>Welcome to My Portfolio</h1>
+    <p>Network Engineer | Cloud Professional | Developer</p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="#certifications" class="btn">View Certifications</a>
+      <a href="#resume" class="btn btn-secondary">Download Résumé</a>
+      <a href="https://github.com/JashandeepJustinBains" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub Profile</a>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2>About Me</h2>
+    <div class="card">
+      <p>
+        I'm a passionate Network Engineer and Cloud Professional with extensive experience in 
+        designing, implementing, and managing enterprise network infrastructure and cloud solutions. 
+        My expertise spans across Cisco technologies, AWS cloud services, and modern DevOps practices.
+      </p>
+      <p style="margin-top: 1rem;">
+        I hold multiple industry certifications and continuously expand my knowledge through 
+        hands-on projects and staying current with emerging technologies in networking, cloud computing, 
+        and software development.
+      </p>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills">
+    <h2>Core Skills</h2>
+    <div class="card">
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Networking</h3>
+        <span class="badge tech-badge">Cisco Routing & Switching</span>
+        <span class="badge tech-badge">TCP/IP</span>
+        <span class="badge tech-badge">VLANs</span>
+        <span class="badge tech-badge">Network Security</span>
+        <span class="badge tech-badge">BGP/OSPF</span>
+        <span class="badge tech-badge">VPN</span>
+        <span class="badge tech-badge">Firewall Configuration</span>
+      </div>
+      
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Cloud & Infrastructure</h3>
+        <span class="badge tech-badge">AWS</span>
+        <span class="badge tech-badge">Azure</span>
+        <span class="badge tech-badge">Linux</span>
+        <span class="badge tech-badge">Docker</span>
+        <span class="badge tech-badge">Kubernetes</span>
+        <span class="badge tech-badge">Terraform</span>
+        <span class="badge tech-badge">CI/CD</span>
+      </div>
+      
+      <div>
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Development</h3>
+        <span class="badge tech-badge">Python</span>
+        <span class="badge tech-badge">JavaScript</span>
+        <span class="badge tech-badge">TypeScript</span>
+        <span class="badge tech-badge">Bash</span>
+        <span class="badge tech-badge">Git</span>
+        <span class="badge tech-badge">REST APIs</span>
+        <span class="badge tech-badge">Automation</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications -->
+  <Certifications />
+
+  <!-- GitHub Projects -->
+  <GitHubRepos />
+
+  <!-- Resume Section -->
+  <section id="resume">
+    <h2>Résumé</h2>
+    <div class="card">
+      <h3>Professional Experience</h3>
+      <p style="margin-top: 1rem; margin-bottom: 1.5rem;">
+        My résumé includes detailed information about my professional experience, education, 
+        certifications, and technical skills. It's tailored for networking and cloud engineering roles.
+      </p>
+      <a href="/personal-website/resume.pdf" class="btn" download>
+        Download Résumé (PDF) →
+      </a>
+      <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.875rem;">
+        Note: Please place your resume.pdf file in the public folder to enable downloads.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Get In Touch</h2>
+    <div class="card">
+      <p style="margin-bottom: 1.5rem;">
+        I'm always interested in hearing about new opportunities, collaborations, or just connecting 
+        with fellow professionals in the networking and cloud space.
+      </p>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="https://linkedin.com/in/jashandeepjustinbains" target="_blank" rel="noopener noreferrer" class="btn">
+          LinkedIn Profile →
+        </a>
+        <a href="https://github.com/JashandeepJustinBains" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+          GitHub Profile →
+        </a>
+        <a href="mailto:your.email@example.com" class="btn btn-secondary">
+          Email Me →
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
