@@ -45,7 +45,7 @@ npm install
 npm run dev
 ```
 
-4. Open your browser and visit `http://localhost:4321/personal-website`
+4. Open your browser and visit `http://localhost:4321`
 
 ## 🛠️ Customization
 
@@ -156,50 +156,55 @@ The static files will be generated in the `dist/` directory.
 
 ## 🚢 Deployment
 
-This site is now configured for **Cloudflare Workers/Pages** deployment with a `wrangler.toml` configuration file.
+This site is configured for **Cloudflare Pages** deployment.
 
 ### Cloudflare Pages Deployment (Recommended)
 
-1. **Install Wrangler CLI** (if not already installed):
+**Option 1: Git Integration (Easiest)**
+1. Push your code to GitHub
+2. Log in to [Cloudflare Pages Dashboard](https://dash.cloudflare.com/pages)
+3. Click "Create a project" → "Connect to Git"
+4. Select your repository
+5. Configure build settings:
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Root directory**: `/` (leave empty)
+6. Click "Save and Deploy"
+
+**Option 2: Direct Upload with Wrangler CLI**
+1. Install Wrangler CLI (if not already installed):
    ```bash
    npm install -g wrangler
    ```
 
-2. **Build the site**:
+2. Build the site:
    ```bash
    npm run build
    ```
 
-3. **Deploy with Wrangler**:
+3. Deploy with Wrangler:
    ```bash
    wrangler pages deploy dist
    ```
 
-4. **Or use Git integration**:
-   - Push your code to GitHub
-   - Connect repository in Cloudflare Pages dashboard
-   - Set build command: `npm run build`
-   - Set output directory: `dist`
-
 ### Alternative: GitHub Pages
 
-The site can still be deployed to GitHub Pages:
+To deploy to GitHub Pages instead:
 
-The `astro.config.mjs` includes:
-```javascript
-{
-  site: 'https://jashandeepjustinbains.github.io',
-  base: '/personal-website',
-}
-```
+1. Update `astro.config.mjs`:
+   ```javascript
+   {
+     site: 'https://jashandeepjustinbains.github.io',
+     base: '/personal-website',  // Add this line back
+   }
+   ```
 
-Update these values if deploying to a different URL.
+2. Update asset paths in your code to include the base path
+3. Rebuild and deploy to GitHub Pages
 
 ### Configuration Files
 
-- `wrangler.toml` - Cloudflare Workers/Pages configuration
-- `astro.config.mjs` - Astro build configuration
-- See `TODO.md` for detailed deployment instructions and manual setup steps
+- `astro.config.mjs` - Astro build configuration (currently configured for Cloudflare Pages)
 
 ## 📄 License
 
