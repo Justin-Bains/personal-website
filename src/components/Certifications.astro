@@ -1,0 +1,54 @@
+---
+// Example certifications - replace with actual cert URLs
+const certifications = [
+  {
+    name: "AWS Certified Solutions Architect",
+    issuer: "Amazon Web Services",
+    url: "https://www.credly.com/badges/your-badge-id",
+    date: "2024",
+    logo: "https://d1.awsstatic.com/training-and-certification/certification-badges/AWS-Certified-Solutions-Architect-Associate_badge.3419559c682629072f1eb968d59dea0741772c0f.png"
+  },
+  {
+    name: "Cisco CCNA",
+    issuer: "Cisco",
+    url: "https://www.credly.com/badges/your-badge-id",
+    date: "2023",
+    logo: "https://images.credly.com/size/340x340/images/0a6d331e-8abf-4272-a949-33f754569a76/CCNAITN__1_.png"
+  },
+  {
+    name: "CompTIA Network+",
+    issuer: "CompTIA",
+    url: "https://www.credly.com/badges/your-badge-id",
+    date: "2023",
+    logo: "https://images.credly.com/size/340x340/images/e1fc05b2-959b-45a4-8d20-124b1df121fe/CompTIA_Network_2Bce.png"
+  }
+];
+---
+
+<section id="certifications">
+  <h2>Certifications</h2>
+  <div class="grid">
+    {certifications.map((cert) => (
+      <div class="card cert-card">
+        <img src={cert.logo} alt={cert.name} class="cert-logo" />
+        <h3>{cert.name}</h3>
+        <p><strong>{cert.issuer}</strong></p>
+        <p>Issued: {cert.date}</p>
+        <a href={cert.url} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+          View Certificate →
+        </a>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .cert-card {
+    text-align: center;
+  }
+  
+  .cert-card a {
+    margin-top: 1rem;
+    display: inline-block;
+  }
+</style>

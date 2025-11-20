@@ -1,0 +1,566 @@
+---
+// Interactive GNS3-style network topology diagram
+---
+
+<section id="homelab">
+  <h2>Homelab Network Topology</h2>
+  <div class="topology-container">
+    <div class="topology-header">
+      <p>Interactive diagram of my personal homelab server cluster infrastructure</p>
+      <div class="topology-controls">
+        <button id="resetView" class="btn-small">Reset View</button>
+        <button id="togglePhysics" class="btn-small">Toggle Physics</button>
+      </div>
+    </div>
+    <div id="network-topology" class="network-diagram"></div>
+    <div id="node-info" class="node-info-panel">
+      <h3>Select a node to view details</h3>
+      <p>Click on any server or device in the topology to see specifications and role information.</p>
+    </div>
+    <div class="topology-legend">
+      <h4>Legend:</h4>
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="legend-color" style="background: #0066cc;"></span>
+          <span>Hypervisor</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #00cc99;"></span>
+          <span>Storage</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #9900cc;"></span>
+          <span>Network Services</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #cc6600;"></span>
+          <span>Applications</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #cc0066;"></span>
+          <span>Security</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .topology-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .topology-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .topology-header p {
+    color: var(--text-muted);
+    margin: 0;
+  }
+  
+  .topology-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .btn-small {
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-small:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+  
+  .network-diagram {
+    width: 100%;
+    height: 600px;
+    background: #0a0a0f;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  
+  .node-info-panel {
+    background: var(--dark-lighter);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    min-height: 150px;
+    margin-bottom: 1rem;
+  }
+  
+  .node-info-panel h3 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+  }
+  
+  .node-info-panel p {
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  
+  .node-info-panel .specs {
+    margin-top: 1rem;
+  }
+  
+  .node-info-panel .specs strong {
+    color: var(--secondary);
+  }
+  
+  .node-info-panel .repo-link {
+    margin-top: 1rem;
+    display: inline-block;
+  }
+  
+  .topology-legend {
+    background: var(--dark-lighter);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .topology-legend h4 {
+    color: var(--secondary);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  .legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  
+  @media (max-width: 768px) {
+    .network-diagram {
+      height: 400px;
+    }
+    
+    .topology-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .topology-controls {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    .btn-small {
+      flex: 1;
+    }
+  }
+</style>
+
+<script>
+  import { Network } from 'vis-network/standalone';
+  
+  // Define the homelab network topology
+  const nodes = [
+    // Hypervisors
+    {
+      id: 1,
+      label: 'Proxmox-01',
+      group: 'hypervisor',
+      title: 'Primary Hypervisor',
+      specs: {
+        cpu: 'Intel Xeon E5-2680 v4 (28 cores)',
+        ram: '128GB DDR4 ECC',
+        storage: '2x 1TB NVMe (RAID 1)',
+        role: 'Primary virtualization host running production VMs and containers'
+      }
+    },
+    {
+      id: 2,
+      label: 'Proxmox-02',
+      group: 'hypervisor',
+      title: 'Secondary Hypervisor',
+      specs: {
+        cpu: 'Intel Xeon E5-2670 v3 (24 cores)',
+        ram: '96GB DDR4 ECC',
+        storage: '2x 512GB NVMe (RAID 1)',
+        role: 'Secondary virtualization host for testing and development workloads'
+      }
+    },
+    // Storage
+    {
+      id: 3,
+      label: 'TrueNAS',
+      group: 'storage',
+      title: 'Network Storage',
+      specs: {
+        cpu: 'Intel Xeon E3-1230 v5',
+        ram: '32GB DDR4 ECC',
+        storage: '6x 4TB HDD (RAIDZ2) + 2x 500GB SSD (Cache)',
+        role: 'Centralized storage with NFS/SMB shares, iSCSI targets, and backups'
+      }
+    },
+    // Network Services
+    {
+      id: 4,
+      label: 'pfSense',
+      group: 'network',
+      title: 'Firewall/Router',
+      specs: {
+        cpu: '4 vCPUs',
+        ram: '8GB',
+        storage: '32GB',
+        role: 'Network gateway, firewall, VPN server, traffic shaping'
+      }
+    },
+    {
+      id: 5,
+      label: 'Pi-hole',
+      group: 'network',
+      title: 'DNS & Ad Blocker',
+      specs: {
+        cpu: '2 vCPUs',
+        ram: '2GB',
+        storage: '16GB',
+        role: 'Network-wide DNS and advertisement blocking'
+      }
+    },
+    {
+      id: 6,
+      label: 'Unifi Controller',
+      group: 'network',
+      title: 'Network Management',
+      specs: {
+        cpu: '2 vCPUs',
+        ram: '4GB',
+        storage: '20GB',
+        role: 'UniFi network device management and monitoring'
+      }
+    },
+    // Applications
+    {
+      id: 7,
+      label: 'Docker Host',
+      group: 'application',
+      title: 'Container Platform',
+      specs: {
+        cpu: '8 vCPUs',
+        ram: '16GB',
+        storage: '100GB',
+        role: 'Docker host running multiple containerized applications'
+      }
+    },
+    {
+      id: 8,
+      label: 'K8s Cluster',
+      group: 'application',
+      title: 'Kubernetes',
+      specs: {
+        cpu: '3 nodes (6 vCPUs each)',
+        ram: '12GB per node',
+        storage: '50GB per node',
+        role: 'Kubernetes cluster for container orchestration and microservices'
+      }
+    },
+    // Security & Monitoring
+    {
+      id: 9,
+      label: 'Wazuh',
+      group: 'security',
+      title: 'SIEM',
+      specs: {
+        cpu: '4 vCPUs',
+        ram: '8GB',
+        storage: '100GB',
+        role: 'Security information and event management, intrusion detection'
+      }
+    },
+    {
+      id: 10,
+      label: 'Grafana',
+      group: 'application',
+      title: 'Monitoring',
+      specs: {
+        cpu: '2 vCPUs',
+        ram: '4GB',
+        storage: '20GB',
+        role: 'Monitoring dashboards, metrics visualization, alerting'
+      }
+    },
+    // Internet
+    {
+      id: 11,
+      label: 'Internet',
+      group: 'external',
+      title: 'WAN Connection',
+      specs: {
+        connection: '1Gbps Fiber',
+        provider: 'ISP',
+        role: 'External internet connectivity'
+      }
+    }
+  ];
+  
+  // Define connections between nodes
+  const edges = [
+    // Internet to pfSense
+    { from: 11, to: 4, label: 'WAN', color: { color: '#cc0000' } },
+    
+    // pfSense to everything (router/firewall)
+    { from: 4, to: 1, label: 'LAN' },
+    { from: 4, to: 2, label: 'LAN' },
+    { from: 4, to: 3, label: 'LAN' },
+    { from: 4, to: 5, label: 'DNS' },
+    { from: 4, to: 6, label: 'LAN' },
+    
+    // Hypervisors to storage
+    { from: 1, to: 3, label: 'iSCSI/NFS', color: { color: '#00cc99' } },
+    { from: 2, to: 3, label: 'iSCSI/NFS', color: { color: '#00cc99' } },
+    
+    // VMs running on Proxmox-01
+    { from: 1, to: 7, label: 'VM', dashes: true },
+    { from: 1, to: 9, label: 'VM', dashes: true },
+    { from: 1, to: 10, label: 'VM', dashes: true },
+    
+    // K8s cluster on Proxmox-02
+    { from: 2, to: 8, label: 'VMs', dashes: true },
+    
+    // DNS connections
+    { from: 5, to: 7, label: 'DNS', color: { color: '#9900cc' }, dashes: true },
+    { from: 5, to: 8, label: 'DNS', color: { color: '#9900cc' }, dashes: true },
+    
+    // Monitoring connections
+    { from: 10, to: 1, label: 'metrics', dashes: [2, 2], color: { color: '#666666' } },
+    { from: 10, to: 2, label: 'metrics', dashes: [2, 2], color: { color: '#666666' } },
+    { from: 10, to: 3, label: 'metrics', dashes: [2, 2], color: { color: '#666666' } },
+    
+    // Security monitoring
+    { from: 9, to: 4, label: 'logs', dashes: [2, 2], color: { color: '#cc0066' } }
+  ];
+  
+  // Create nodes for vis-network
+  const visNodes = nodes.map(node => ({
+    id: node.id,
+    label: node.label,
+    title: node.title,
+    group: node.group,
+    font: { color: '#e8e8e8', size: 14 },
+    specs: node.specs
+  }));
+  
+  // Network configuration
+  const container = document.getElementById('network-topology');
+  const data = {
+    nodes: visNodes,
+    edges: edges
+  };
+  
+  const options = {
+    nodes: {
+      shape: 'box',
+      margin: 10,
+      widthConstraint: {
+        minimum: 100,
+        maximum: 150
+      },
+      font: {
+        color: '#e8e8e8',
+        size: 14,
+        face: 'Segoe UI, sans-serif'
+      },
+      borderWidth: 2,
+      borderWidthSelected: 3,
+      shadow: {
+        enabled: true,
+        color: 'rgba(0, 102, 204, 0.5)',
+        size: 10,
+        x: 0,
+        y: 0
+      }
+    },
+    edges: {
+      width: 2,
+      color: {
+        color: '#4a5568',
+        highlight: '#00cc99',
+        hover: '#0066cc'
+      },
+      smooth: {
+        type: 'continuous',
+        roundness: 0.5
+      },
+      font: {
+        color: '#a0a0a0',
+        size: 11,
+        strokeWidth: 0
+      }
+    },
+    groups: {
+      hypervisor: {
+        color: {
+          background: '#0066cc',
+          border: '#004c99',
+          highlight: { background: '#0080ff', border: '#0066cc' }
+        },
+        shape: 'box'
+      },
+      storage: {
+        color: {
+          background: '#00cc99',
+          border: '#009973',
+          highlight: { background: '#00ffbf', border: '#00cc99' }
+        },
+        shape: 'box'
+      },
+      network: {
+        color: {
+          background: '#9900cc',
+          border: '#7700a3',
+          highlight: { background: '#b300ff', border: '#9900cc' }
+        },
+        shape: 'box'
+      },
+      application: {
+        color: {
+          background: '#cc6600',
+          border: '#a35200',
+          highlight: { background: '#ff8000', border: '#cc6600' }
+        },
+        shape: 'box'
+      },
+      security: {
+        color: {
+          background: '#cc0066',
+          border: '#a30052',
+          highlight: { background: '#ff0080', border: '#cc0066' }
+        },
+        shape: 'box'
+      },
+      external: {
+        color: {
+          background: '#666666',
+          border: '#444444',
+          highlight: { background: '#888888', border: '#666666' }
+        },
+        shape: 'diamond'
+      }
+    },
+    physics: {
+      enabled: true,
+      barnesHut: {
+        gravitationalConstant: -3000,
+        centralGravity: 0.3,
+        springLength: 150,
+        springConstant: 0.04,
+        damping: 0.09,
+        avoidOverlap: 0.5
+      },
+      stabilization: {
+        enabled: true,
+        iterations: 200,
+        updateInterval: 25
+      }
+    },
+    interaction: {
+      hover: true,
+      tooltipDelay: 100,
+      navigationButtons: true,
+      keyboard: {
+        enabled: true
+      },
+      zoomView: true,
+      dragView: true
+    }
+  };
+  
+  const network = new Network(container, data, options);
+  
+  // Handle node selection
+  network.on('selectNode', function(params) {
+    if (params.nodes.length > 0) {
+      const nodeId = params.nodes[0];
+      const node = nodes.find(n => n.id === nodeId);
+      
+      if (node) {
+        const infoPanel = document.getElementById('node-info');
+        let html = `
+          <h3>${node.label}</h3>
+          <p><strong>Role:</strong> ${node.title}</p>
+          <div class="specs">
+        `;
+        
+        for (const [key, value] of Object.entries(node.specs)) {
+          const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+          html += `<p><strong>${displayKey}:</strong> ${value}</p>`;
+        }
+        
+        html += `
+          </div>
+          <a href="https://github.com/JashandeepJustinBains/homelab" target="_blank" rel="noopener noreferrer" class="btn repo-link">
+            View Homelab Repo on GitHub →
+          </a>
+        `;
+        
+        infoPanel.innerHTML = html;
+      }
+    }
+  });
+  
+  // Handle deselection
+  network.on('deselectNode', function() {
+    const infoPanel = document.getElementById('node-info');
+    infoPanel.innerHTML = `
+      <h3>Select a node to view details</h3>
+      <p>Click on any server or device in the topology to see specifications and role information.</p>
+    `;
+  });
+  
+  // Control buttons
+  document.getElementById('resetView')?.addEventListener('click', () => {
+    network.fit({
+      animation: {
+        duration: 1000,
+        easingFunction: 'easeInOutQuad'
+      }
+    });
+  });
+  
+  let physicsEnabled = true;
+  document.getElementById('togglePhysics')?.addEventListener('click', () => {
+    physicsEnabled = !physicsEnabled;
+    network.setOptions({ physics: { enabled: physicsEnabled } });
+  });
+  
+  // Fit the network after stabilization
+  network.once('stabilizationIterationsDone', function() {
+    network.setOptions({ physics: false });
+    network.fit();
+  });
+</script>
