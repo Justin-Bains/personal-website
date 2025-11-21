@@ -35,84 +35,98 @@ physicalNodes.forEach(physNode => {
 // Prometheus scrapes Node Exporters
 const prometheus = pods.find(p => p.label === 'Prometheus');
 const nodeExporters = pods.filter(p => p.label === 'Node Exporter');
-nodeExporters.forEach(exporter => {
-  connections.push({
-    from: prometheus.id,
-    to: exporter.id,
-    label: 'scrape',
-    color: '#16a34a',
-    dashes: true
+if (prometheus && nodeExporters.length > 0) {
+  nodeExporters.forEach(exporter => {
+    connections.push({
+      from: prometheus.id,
+      to: exporter.id,
+      label: 'scrape',
+      color: '#16a34a',
+      dashes: true
+    });
   });
-});
+}
 
 // Promtails send logs to Loki
 const loki = pods.find(p => p.label === 'Loki');
 const promtails = pods.filter(p => p.label === 'Promtail');
-promtails.forEach(promtail => {
-  connections.push({
-    from: promtail.id,
-    to: loki.id,
-    label: 'logs',
-    color: '#ea580c',
-    dashes: true
+if (loki && promtails.length > 0) {
+  promtails.forEach(promtail => {
+    connections.push({
+      from: promtail.id,
+      to: loki.id,
+      label: 'logs',
+      color: '#ea580c',
+      dashes: true
+    });
   });
-});
+}
 
 // Grafana queries Prometheus and Loki
 const grafana = pods.find(p => p.label === 'Grafana');
-connections.push({
-  from: grafana.id,
-  to: prometheus.id,
-  label: 'query',
-  color: '#f59e0b',
-  dashes: [5, 5]
-});
-connections.push({
-  from: grafana.id,
-  to: loki.id,
-  label: 'query',
-  color: '#f59e0b',
-  dashes: [5, 5]
-});
+if (grafana && prometheus) {
+  connections.push({
+    from: grafana.id,
+    to: prometheus.id,
+    label: 'query',
+    color: '#f59e0b',
+    dashes: [5, 5]
+  });
+}
+if (grafana && loki) {
+  connections.push({
+    from: grafana.id,
+    to: loki.id,
+    label: 'query',
+    color: '#f59e0b',
+    dashes: [5, 5]
+  });
+}
 
 // All pods connect to API Server
 const apiServer = pods.find(p => p.label === 'Kubernetes API Server');
-pods.forEach(pod => {
-  if (pod.label !== 'Kubernetes API Server' && pod.label !== 'etcd') {
-    connections.push({
-      from: pod.id,
-      to: apiServer.id,
-      label: '',
-      color: '#64748b',
-      width: 1
-    });
-  }
-});
+if (apiServer) {
+  pods.forEach(pod => {
+    if (pod.label !== 'Kubernetes API Server' && pod.label !== 'etcd') {
+      connections.push({
+        from: pod.id,
+        to: apiServer.id,
+        label: '',
+        color: '#64748b',
+        width: 1
+      });
+    }
+  });
+}
 
 // API Server connects to etcd
 const etcd = pods.find(p => p.label === 'etcd');
-connections.push({
-  from: apiServer.id,
-  to: etcd.id,
-  label: 'state',
-  color: '#2563eb',
-  width: 3
-});
+if (apiServer && etcd) {
+  connections.push({
+    from: apiServer.id,
+    to: etcd.id,
+    label: 'state',
+    color: '#2563eb',
+    width: 3
+  });
+}
 
 // CoreDNS provides DNS for all pods
 const coreDNS = pods.find(p => p.label === 'CoreDNS');
-pods.forEach(pod => {
-  if (pod.label !== 'CoreDNS' && pod.label !== 'Kubernetes API Server' && pod.label !== 'etcd') {
-    connections.push({
-      from: pod.id,
-      to: coreDNS.id,
-      label: '',
-      color: '#8b5cf6',
-      width: 1,
-      dashes: [2, 4]
-    });
-  }
-});
+if (coreDNS) {
+  pods.forEach(pod => {
+    if (pod.label !== 'CoreDNS' && pod.label !== 'Kubernetes API Server' && pod.label !== 'etcd') {
+      connections.push({
+        from: pod.id,
+        to: coreDNS.id,
+        label: '',
+        color: '#8b5cf6',
+        width: 1,
+        dashes: [2, 4]
+      });
+    }
+  });
+}
 
 function getServiceGroup(serviceName) {
   const controlPlane = ['Kubernetes API Server', 'etcd', 'CoreDNS'];

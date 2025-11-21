@@ -146,14 +146,13 @@ const structuredData = {
   <script>
     document.getElementById('toggleResume')?.addEventListener('click', function() {
       const display = document.getElementById('resumeDisplay');
-      const button = this as HTMLButtonElement;
       if (display) {
         if (display.style.display === 'none') {
           display.style.display = 'block';
-          button.textContent = 'Hide Resume';
+          this.textContent = 'Hide Resume';
         } else {
           display.style.display = 'none';
-          button.textContent = 'View Resume';
+          this.textContent = 'View Resume';
         }
       }
     });
