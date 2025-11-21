@@ -330,11 +330,19 @@ function getServiceGroup(serviceName) {
   
   // Store Network class globally for use in the data script
   window.VisNetwork = Network;
+  // Dispatch event to signal that vis-network is loaded
+  window.dispatchEvent(new Event('visNetworkLoaded'));
 </script>
 
 <script define:vars={{ pods, connections, physicalNodes }}>
-  // Use the globally stored Network class
-  const Network = window.VisNetwork;
+  // Wait for vis-network to load
+  function initializeTopology() {
+    const Network = window.VisNetwork;
+    
+    if (!Network) {
+      console.error('VisNetwork not loaded yet');
+      return;
+    }
   
   // Transform pods to vis-network format
   const nodes = pods.map(pod => ({
@@ -593,4 +601,12 @@ function getServiceGroup(serviceName) {
     network.setOptions({ physics: false });
     network.fit();
   });
+  }
+  
+  // Initialize when vis-network is loaded
+  if (window.VisNetwork) {
+    initializeTopology();
+  } else {
+    window.addEventListener('visNetworkLoaded', initializeTopology);
+  }
 </script>
