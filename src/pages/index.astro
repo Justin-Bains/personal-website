@@ -3,9 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Certifications from '../components/Certifications.astro';
 import GitHubRepos from '../components/GitHubRepos.astro';
 import NetworkTopology from '../components/NetworkTopology.astro';
+import { readFile } from 'node:fs/promises';
+import { marked } from 'marked';
 
 const title = "Jashandeep Justin Bains - Network Engineer & Cloud Professional";
 const description = "Professional portfolio showcasing my networking, cloud, and software development certifications, projects, and experience. CCNA, AWS Certified, and more.";
+
+// Read resume markdown
+let resumeContent = '';
+try {
+  const resumeMarkdown = await readFile('public/resume.md', 'utf-8');
+  resumeContent = marked.parse(resumeMarkdown);
+} catch (error) {
+  console.error('Error reading resume:', error);
+  resumeContent = '<p>Resume content is being updated. Please check back soon.</p>';
+}
 
 // Structured Data for SEO (JSON-LD)
 const structuredData = {
@@ -113,20 +125,110 @@ const structuredData = {
   <!-- Resume Section -->
   <section id="resume">
     <h2>Résumé</h2>
-    <div class="card">
-      <h3>Professional Experience</h3>
-      <p style="margin-top: 1rem; margin-bottom: 1.5rem;">
-        My résumé includes detailed information about my professional experience, education, 
-        certifications, and technical skills. It's tailored for networking and cloud engineering roles.
-      </p>
-      <a href="/resume.pdf" class="btn" download>
-        Download Résumé (PDF) →
-      </a>
+    <div class="card resume-content">
+      <div class="resume-actions" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="/resume.pdf" class="btn" download>
+          Download PDF →
+        </a>
+        <button id="toggleResume" class="btn btn-secondary">
+          View Resume
+        </button>
+      </div>
+      <div id="resumeDisplay" class="resume-display" style="display: none;">
+        <div set:html={resumeContent} />
+      </div>
       <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.875rem;">
-        Note: Please place your resume.pdf file in the public folder to enable downloads.
+        Note: PDF will be generated from LaTeX source (coming soon)
       </p>
     </div>
   </section>
+
+  <script>
+    document.getElementById('toggleResume')?.addEventListener('click', function() {
+      const display = document.getElementById('resumeDisplay');
+      if (display) {
+        if (display.style.display === 'none') {
+          display.style.display = 'block';
+          this.textContent = 'Hide Resume';
+        } else {
+          display.style.display = 'none';
+          this.textContent = 'View Resume';
+        }
+      }
+    });
+  </script>
+
+  <style>
+    .resume-content {
+      max-width: 100%;
+    }
+    
+    .resume-display {
+      padding: 2rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    .resume-display :global(h1) {
+      color: var(--text-primary);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .resume-display :global(h2) {
+      color: var(--secondary);
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border-base);
+      padding-bottom: 0.5rem;
+    }
+
+    .resume-display :global(h3) {
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .resume-display :global(p) {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .resume-display :global(ul) {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .resume-display :global(li) {
+      margin-bottom: 0.5rem;
+    }
+
+    .resume-display :global(strong) {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .resume-display :global(a) {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    .resume-display :global(a:hover) {
+      text-decoration: underline;
+    }
+
+    .resume-display :global(hr) {
+      border: none;
+      border-top: 1px solid var(--border-base);
+      margin: 2rem 0;
+    }
+  </style>
 
   <!-- Contact Section -->
   <section id="contact">
