@@ -79,7 +79,7 @@ Relevant Coursework: Computer Networks, Security & Privacy, Database Systems, UI
 
 ## Skills
 
-**Certifications:** CompTIA A+, Network+, Security+, GCP ACE, CCNA (in progress)
+**Certifications:** CompTIA A+, Network+, Security+, GCP ACE, CCNA
 
 **Networking:** Cisco IOS, VLANs/VRFs, OSPF, 802.1X/RADIUS, DHCP/DNS, SDN (OpenFlow), BGP, QoS, LACP, LDAP, CDP
 
