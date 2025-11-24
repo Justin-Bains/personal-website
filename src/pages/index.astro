@@ -3,21 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Certifications from '../components/Certifications.astro';
 import GitHubRepos from '../components/GitHubRepos.astro';
 import NetworkTopology from '../components/NetworkTopology.astro';
-import { readFile } from 'node:fs/promises';
-import { marked } from 'marked';
 
 const title = "Jashandeep Justin Bains - Network Engineer & Cloud Professional";
 const description = "Professional portfolio showcasing my networking, cloud, and software development certifications, projects, and experience. CCNA, AWS Certified, and more.";
-
-// Read resume markdown
-let resumeContent = '';
-try {
-  const resumeMarkdown = await readFile('public/resume.md', 'utf-8');
-  resumeContent = marked.parse(resumeMarkdown);
-} catch (error) {
-  console.error('Error reading resume:', error);
-  resumeContent = '<p>Resume content is being updated. Please check back soon.</p>';
-}
 
 // Structured Data for SEO (JSON-LD)
 const structuredData = {
@@ -26,10 +14,10 @@ const structuredData = {
   "name": "Jashandeep Justin Bains",
   "jobTitle": "Network Engineer",
   "description": description,
-  "url": "https://your-site.pages.dev",
+  "url": "https://jjbly.uk",
   "sameAs": [
     "https://github.com/JashandeepJustinBains",
-    "https://linkedin.com/in/jashandeepjustinbains"
+    "https://www.linkedin.com/in/jashandeep-bains-b2aab6192}"
   ],
   "knowsAbout": [
     "Networking",
@@ -72,7 +60,11 @@ const structuredData = {
         and software development.
       </p>
     </div>
+
   </section>
+
+  <!-- Certifications Section -->
+  <Certifications />
 
   <!-- Skills Section -->
   <section id="skills">
@@ -80,35 +72,120 @@ const structuredData = {
     <div class="card">
       <div style="margin-bottom: 1.5rem;">
         <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Networking</h3>
-        <span class="badge tech-badge">Cisco Routing & Switching</span>
-        <span class="badge tech-badge">TCP/IP</span>
+        <span class="badge tech-badge">LAN</span>
+        <span class="badge tech-badge">WAN</span>
+        <span class="badge tech-badge">Core Networking</span>
         <span class="badge tech-badge">VLANs</span>
+        <span class="badge tech-badge">VRFs</span>
+        <span class="badge tech-badge">OSPF</span>
+        <span class="badge tech-badge">BGP</span>
+        <span class="badge tech-badge">DHCP</span>
+        <span class="badge tech-badge">DNS</span>
+        <span class="badge tech-badge">Peering</span>
+        <span class="badge tech-badge">Cisco IOS/NX-OS</span>
+        <span class="badge tech-badge">LACP</span>
+        <span class="badge tech-badge">QoS</span>
+        <span class="badge tech-badge">NAT</span>
+        <span class="badge tech-badge">Firewalls</span>
+        <span class="badge tech-badge">VPNs</span>
+        <span class="badge tech-badge">SDN (OpenFlow)</span>
+        <span class="badge tech-badge">802.1X</span>
+        <span class="badge tech-badge">RADIUS</span>
+        <span class="badge tech-badge">LDAP</span>
+        <span class="badge tech-badge">CDP</span>
         <span class="badge tech-badge">Network Security</span>
-        <span class="badge tech-badge">BGP/OSPF</span>
-        <span class="badge tech-badge">VPN</span>
-        <span class="badge tech-badge">Firewall Configuration</span>
+        <span class="badge tech-badge">Wireshark</span>
       </div>
-      
       <div style="margin-bottom: 1.5rem;">
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Cloud & Infrastructure</h3>
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Security</h3>
+        <span class="badge tech-badge">IDS/IPS (Snort, Suricata)</span>
+        <span class="badge tech-badge">SIEM (Splunk, Prometheus, Grafana, Loki)</span>
+        <span class="badge tech-badge">mTLS</span>
+        <span class="badge tech-badge">PKI</span>
+        <span class="badge tech-badge">Incident/Change Management</span>
+        <span class="badge tech-badge">Network Hardening</span>
+        <span class="badge tech-badge">Network Policies</span>
+        <span class="badge tech-badge">Hardened Kubernetes</span>
+      </div>
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Monitoring & Observability</h3>
+        <span class="badge tech-badge">Prometheus</span>
+        <span class="badge tech-badge">Grafana</span>
+        <span class="badge tech-badge">Splunk</span>
+        <span class="badge tech-badge">Loki</span>
+        <span class="badge tech-badge">SNMPv3 (Cisco)</span>
+        <span class="badge tech-badge">IPMI/BMC</span>
+        <span class="badge tech-badge">IMNI</span>
+        <span class="badge tech-badge">NetFlow</span>
+        <span class="badge tech-badge">sFlow</span>
+        <span class="badge tech-badge">Open-source NMS</span>
+        <span class="badge tech-badge">Test Equipment</span>
+      </div>
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Cloud & DevOps</h3>
         <span class="badge tech-badge">AWS</span>
-        <span class="badge tech-badge">Azure</span>
-        <span class="badge tech-badge">Linux</span>
+        <span class="badge tech-badge">Microsoft Azure</span>
+        <span class="badge tech-badge">Azure Active Directory (Entra ID)</span>
+        <span class="badge tech-badge">Azure Arc</span>
+        <span class="badge tech-badge">Kubernetes (k8s/k3s)</span>
         <span class="badge tech-badge">Docker</span>
-        <span class="badge tech-badge">Kubernetes</span>
+        <span class="badge tech-badge">Containerd</span>
+        <span class="badge tech-badge">Podman</span>
         <span class="badge tech-badge">Terraform</span>
+        <span class="badge tech-badge">Ansible</span>
+        <span class="badge tech-badge">Jenkins</span>
+        <span class="badge tech-badge">Drone</span>
+        <span class="badge tech-badge">GitHub Actions</span>
+        <span class="badge tech-badge">Azure Pipelines</span>
+        <span class="badge tech-badge">ArgoCD</span>
         <span class="badge tech-badge">CI/CD</span>
       </div>
-      
-      <div>
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Development</h3>
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Programming & Scripting</h3>
         <span class="badge tech-badge">Python</span>
         <span class="badge tech-badge">JavaScript</span>
         <span class="badge tech-badge">TypeScript</span>
+        <span class="badge tech-badge">Java</span>
+        <span class="badge tech-badge">C++</span>
+        <span class="badge tech-badge">C</span>
         <span class="badge tech-badge">Bash</span>
+        <span class="badge tech-badge">PowerShell</span>
+        <span class="badge tech-badge">Go</span>
+        <span class="badge tech-badge">R</span>
+        <span class="badge tech-badge">SAS</span>
         <span class="badge tech-badge">Git</span>
         <span class="badge tech-badge">REST APIs</span>
         <span class="badge tech-badge">Automation</span>
+      </div>
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Frameworks & Tools</h3>
+        <span class="badge tech-badge">Kubespray</span>
+        <span class="badge tech-badge">Flask</span>
+        <span class="badge tech-badge">React</span>
+        <span class="badge tech-badge">TensorFlow</span>
+        <span class="badge tech-badge">Keras</span>
+        <span class="badge tech-badge">FastAPI</span>
+        <span class="badge tech-badge">Node.js</span>
+        <span class="badge tech-badge">Astro</span>
+        <span class="badge tech-badge">Jira</span>
+        <span class="badge tech-badge">Vanta</span>
+        <span class="badge tech-badge">Postman</span>
+        <span class="badge tech-badge">LaTeX</span>
+        <span class="badge tech-badge">Mininet</span>
+        <span class="badge tech-badge">WireGuard</span>
+      </div>
+      <div>
+        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Databases & OS</h3>
+        <span class="badge tech-badge">MongoDB</span>
+        <span class="badge tech-badge">SQLite</span>
+        <span class="badge tech-badge">MySQL</span>
+        <span class="badge tech-badge">PostgreSQL</span>
+        <span class="badge tech-badge">Elasticsearch</span>
+        <span class="badge tech-badge">Redis</span>
+        <span class="badge tech-badge">Red Hat Enterprise Linux (RHEL)</span>
+        <span class="badge tech-badge">Debian</span>
+        <span class="badge tech-badge">Windows Server</span>
+        <span class="badge tech-badge">GNU/Linux</span>
       </div>
     </div>
   </section>
@@ -122,6 +199,7 @@ const structuredData = {
   <!-- GitHub Projects -->
   <GitHubRepos />
 
+
   <!-- Resume Section -->
   <section id="resume">
     <h2>Résumé</h2>
@@ -130,97 +208,32 @@ const structuredData = {
         <a href="/resume.pdf" class="btn" download>
           Download PDF →
         </a>
-        <button id="toggleResume" class="btn btn-secondary">
-          View Resume
-        </button>
       </div>
-      <div id="resumeDisplay" class="resume-display" style="display: none;">
-        <div set:html={resumeContent} />
+      <div class="resume-display">
+        <iframe src="/resume.pdf" width="100%" height="900px" style="border:none;"></iframe>
+        <div style="margin-top: 1rem; text-align: center;">
+          <noscript>
+            This browser does not support PDFs. Please download the PDF to view it: <a href="/resume.pdf">Download PDF</a>
+          </noscript>
+        </div>
       </div>
-      <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.875rem;">
-        Note: PDF will be generated from LaTeX source (coming soon)
-      </p>
     </div>
   </section>
-
-  <script>
-    document.getElementById('toggleResume')?.addEventListener('click', function() {
-      const display = document.getElementById('resumeDisplay');
-      if (display) {
-        if (display.style.display === 'none') {
-          display.style.display = 'block';
-          this.textContent = 'Hide Resume';
-        } else {
-          display.style.display = 'none';
-          this.textContent = 'View Resume';
-        }
-      }
-    });
-  </script>
 
   <style>
     .resume-content {
       max-width: 100%;
     }
-    
     .resume-display {
-      padding: 2rem;
+      padding: 2rem 0;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-base);
       border-radius: var(--radius-md);
       margin-top: 1rem;
       max-width: 100%;
       overflow-x: auto;
+      min-height: 900px;
     }
-
-    .resume-display :global(h1) {
-      color: var(--text-primary);
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .resume-display :global(h2) {
-      color: var(--secondary);
-      font-size: 1.5rem;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid var(--border-base);
-      padding-bottom: 0.5rem;
-    }
-
-    .resume-display :global(h3) {
-      color: var(--text-primary);
-      font-size: 1.25rem;
-      margin-top: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .resume-display :global(p) {
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-
-    .resume-display :global(ul) {
-      margin-left: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .resume-display :global(li) {
-      margin-bottom: 0.5rem;
-    }
-
-    .resume-display :global(strong) {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .resume-display :global(a) {
-      color: var(--color-primary);
-      text-decoration: none;
-    }
-
-    .resume-display :global(a:hover) {
-      text-decoration: underline;
     }
 
     .resume-display :global(hr) {
@@ -245,7 +258,7 @@ const structuredData = {
         <a href="https://github.com/JashandeepJustinBains" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
           GitHub Profile →
         </a>
-        <a href="mailto:your.email@example.com" class="btn btn-secondary">
+        <a href="mailto:jashandeepjbains@gmail.com" class="btn btn-secondary">
           Email Me →
         </a>
       </div>

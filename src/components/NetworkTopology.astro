@@ -149,10 +149,12 @@ function getServiceGroup(serviceName) {
       <p>Interactive Kubernetes pod topology showing services and their connections across the 3-node VMStation cluster</p>
       <div class="topology-controls">
         <button id="resetView" class="btn-small">Reset View</button>
-        <button id="togglePhysics" class="btn-small">Toggle Physics</button>
       </div>
     </div>
-    <div id="network-topology" class="network-diagram"></div>
+    <div id="network-topology-vpcs" class="network-diagram-vpcs">
+      <!-- VPC overlays will be rendered here -->
+      <div id="network-topology" class="network-diagram"></div>
+    </div>
     <div id="node-info" class="node-info-panel">
       <h3>Select a node to view details</h3>
       <p>Click on any server or device in the topology to see specifications and role information.</p>
@@ -499,20 +501,7 @@ function getServiceGroup(serviceName) {
       }
     },
     physics: {
-      enabled: true,
-      barnesHut: {
-        gravitationalConstant: -3000,
-        centralGravity: 0.3,
-        springLength: 150,
-        springConstant: 0.04,
-        damping: 0.09,
-        avoidOverlap: 0.5
-      },
-      stabilization: {
-        enabled: true,
-        iterations: 200,
-        updateInterval: 25
-      }
+      enabled: false
     },
     interaction: {
       hover: true,
@@ -604,11 +593,57 @@ function getServiceGroup(serviceName) {
     });
   });
   
-  let physicsEnabled = true;
-  document.getElementById('togglePhysics')?.addEventListener('click', () => {
-    physicsEnabled = !physicsEnabled;
-    network.setOptions({ physics: { enabled: physicsEnabled } });
-  });
+
+  // VPC overlays: draw dashed containers for each group
+  function drawVPCOverlays() {
+    const container = document.getElementById('network-topology-vpcs');
+    if (!container) return;
+    // Remove old overlays
+    Array.from(container.querySelectorAll('.vpc-overlay')).forEach(e => e.remove());
+
+    // Example: hardcoded bounding boxes for demo. In production, calculate from node positions.
+    const vpcs = [
+      { group: 'monitoring', label: 'Monitoring VPC', color: '#16a34a', top: 60, left: 60, width: 350, height: 300, dash: '8,8' },
+      { group: 'workload', label: 'Storage VPC', color: '#64748b', top: 200, left: 500, width: 350, height: 300, dash: '8,8' },
+      // Add more as needed
+    ];
+    vpcs.forEach(vpc => {
+      const div = document.createElement('div');
+      div.className = 'vpc-overlay';
+      div.style.position = 'absolute';
+      div.style.top = vpc.top + 'px';
+      div.style.left = vpc.left + 'px';
+      div.style.width = vpc.width + 'px';
+      div.style.height = vpc.height + 'px';
+      div.style.border = `3px dashed ${vpc.color}`;
+      div.style.borderRadius = '32px';
+      div.style.background = 'rgba(255,255,255,0.03)';
+      div.style.pointerEvents = 'none';
+      div.style.zIndex = 1;
+      div.innerHTML = `<span style="position:absolute;top:-2.2em;left:0.5em;color:${vpc.color};font-weight:bold;">${vpc.label}</span>`;
+      container.appendChild(div);
+    });
+
+    // Cloud tunnel effect (Azure Web Apps to compute node)
+    const tunnel = document.createElement('div');
+    tunnel.className = 'cloud-tunnel';
+    tunnel.style.position = 'absolute';
+    tunnel.style.top = '120px';
+    tunnel.style.left = '410px';
+    tunnel.style.width = '120px';
+    tunnel.style.height = '30px';
+    tunnel.style.border = '2px dotted #2563eb';
+    tunnel.style.borderRadius = '20px';
+    tunnel.style.background = 'rgba(37,99,235,0.08)';
+    tunnel.style.zIndex = 2;
+    tunnel.style.pointerEvents = 'none';
+    tunnel.innerHTML = `<span style="position:absolute;top:-1.8em;left:0.5em;color:#2563eb;font-weight:bold;">Cloudflared Tunnel</span>`;
+    container.appendChild(tunnel);
+  }
+
+  // Redraw overlays after vis-network renders
+  setTimeout(drawVPCOverlays, 800);
+  window.addEventListener('resize', drawVPCOverlays);
   
   // Fit the network after stabilization
   network.once('stabilizationIterationsDone', function() {
