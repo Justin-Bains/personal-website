@@ -1,0 +1,91 @@
+---
+// OpenFlow/MiniNet Project Network Topology SVG
+// This is a static SVG based on the extracted topology from topology.py and partB_topology.py
+---
+<section class="network-svg-section">
+  <h3>OpenFlow & MiniNet Network Topology</h3>
+  <svg viewBox="0 0 900 500" width="100%" height="340" style="background:var(--bg-secondary);border-radius:12px;max-width:100%;margin:1rem 0;">
+    <!-- Switches -->
+    <g class="switches">
+      <circle cx="200" cy="120" r="32" fill="#2563eb" stroke="#1e40af" stroke-width="3" />
+      <text x="200" y="125" text-anchor="middle" font-size="18" fill="#fff">s0</text>
+      <circle cx="400" cy="120" r="32" fill="#2563eb" stroke="#1e40af" stroke-width="3" />
+      <text x="400" y="125" text-anchor="middle" font-size="18" fill="#fff">s1</text>
+      <circle cx="600" cy="120" r="32" fill="#2563eb" stroke="#1e40af" stroke-width="3" />
+      <text x="600" y="125" text-anchor="middle" font-size="18" fill="#fff">s2</text>
+      <circle cx="800" cy="120" r="32" fill="#2563eb" stroke="#1e40af" stroke-width="3" />
+      <text x="800" y="125" text-anchor="middle" font-size="18" fill="#fff">s3</text>
+    </g>
+    <!-- Hosts -->
+    <g class="hosts">
+      <rect x="120" y="40" width="40" height="40" rx="8" fill="#60a5fa" stroke="#2563eb" stroke-width="2" />
+      <text x="140" y="65" text-anchor="middle" font-size="15" fill="#fff">h0</text>
+      <rect x="320" y="40" width="40" height="40" rx="8" fill="#60a5fa" stroke="#2563eb" stroke-width="2" />
+      <text x="340" y="65" text-anchor="middle" font-size="15" fill="#fff">h1</text>
+      <rect x="520" y="40" width="40" height="40" rx="8" fill="#60a5fa" stroke="#2563eb" stroke-width="2" />
+      <text x="540" y="65" text-anchor="middle" font-size="15" fill="#fff">h2</text>
+      <rect x="720" y="40" width="40" height="40" rx="8" fill="#60a5fa" stroke="#2563eb" stroke-width="2" />
+      <text x="740" y="65" text-anchor="middle" font-size="15" fill="#fff">h3</text>
+    </g>
+    <!-- Links -->
+    <g class="links" stroke="#64748b" stroke-width="3">
+      <!-- Host to Switch -->
+      <line x1="160" y1="80" x2="200" y2="88" /> <!-- h0-s0 -->
+      <line x1="360" y1="80" x2="400" y2="88" /> <!-- h1-s1 -->
+      <line x1="560" y1="80" x2="600" y2="88" /> <!-- h2-s2 -->
+      <line x1="760" y1="80" x2="800" y2="88" /> <!-- h3-s3 -->
+      <!-- Switch to Switch -->
+      <line x1="232" y1="120" x2="368" y2="120" /> <!-- s0-s1 -->
+      <line x1="432" y1="120" x2="568" y2="120" /> <!-- s1-s2 -->
+      <line x1="632" y1="120" x2="768" y2="120" /> <!-- s2-s3 -->
+    </g>
+  </svg>
+  <div class="svg-legend">
+    <span><span class="legend-switch"></span> Switch</span>
+    <span><span class="legend-host"></span> Host</span>
+    <span><span class="legend-link"></span> Link</span>
+  </div>
+</section>
+<style>
+.network-svg-section {
+  margin: 2.5rem 0 2rem 0;
+  padding: 1.5rem 0 1rem 0;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.svg-legend {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+.legend-switch {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: #2563eb;
+  border-radius: 50%;
+  margin-right: 0.5em;
+  border: 2px solid #1e40af;
+}
+.legend-host {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: #60a5fa;
+  border-radius: 6px;
+  margin-right: 0.5em;
+  border: 2px solid #2563eb;
+}
+.legend-link {
+  display: inline-block;
+  width: 24px;
+  height: 4px;
+  background: #64748b;
+  border-radius: 2px;
+  margin-right: 0.5em;
+}
+</style>

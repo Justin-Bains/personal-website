@@ -32,6 +32,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="twitter:description" content={description} />
     
     <title>{title}</title>
+    <!-- Plausible Analytics -->
+    <script defer data-domain="jjbly.uk" src="https://plausible.io/js/plausible.js"></script>
   </head>
   <body>
     <header>

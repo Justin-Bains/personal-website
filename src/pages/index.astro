@@ -1,6 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+import About from '../components/About.astro';
+import FeaturedProjects from '../components/FeaturedProjects.astro';
+import Skills from '../components/Skills.astro';
 import Certifications from '../components/Certifications.astro';
+import Resume from '../components/Resume.astro';
+import Blog from '../components/Blog.astro';
+import Contact from '../components/Contact.astro';
 import GitHubRepos from '../components/GitHubRepos.astro';
 import NetworkTopology from '../components/NetworkTopology.astro';
 
@@ -32,6 +39,19 @@ const structuredData = {
 
 <BaseLayout title={title} description={description}>
   <!-- SEO Structured Data -->
+  <head>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jjbly.uk" />
+    <meta property="og:image" content="/public/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/public/og-image.png" />
+  </head>
   <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   
   <!-- Hero Section -->
@@ -45,223 +65,125 @@ const structuredData = {
     </div>
   </div>
 
-  <!-- About Section -->
-  <section id="about">
-    <h2>About Me</h2>
-    <div class="card">
-      <p>
-        I'm a passionate Network Engineer and Cloud Professional with extensive experience in 
-        designing, implementing, and managing enterprise network infrastructure and cloud solutions. 
-        My expertise spans across Cisco technologies, AWS cloud services, and modern DevOps practices.
-      </p>
-      <p style="margin-top: 1rem;">
-        I hold multiple industry certifications and continuously expand my knowledge through 
-        hands-on projects and staying current with emerging technologies in networking, cloud computing, 
-        and software development.
-      </p>
-    </div>
 
-  </section>
-
-  <!-- Certifications Section -->
+  <About />
   <Certifications />
-
-  <!-- Skills Section -->
-  <section id="skills">
-    <h2>Core Skills</h2>
-    <div class="card">
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Networking</h3>
-        <span class="badge tech-badge">LAN</span>
-        <span class="badge tech-badge">WAN</span>
-        <span class="badge tech-badge">Core Networking</span>
-        <span class="badge tech-badge">VLANs</span>
-        <span class="badge tech-badge">VRFs</span>
-        <span class="badge tech-badge">OSPF</span>
-        <span class="badge tech-badge">BGP</span>
-        <span class="badge tech-badge">DHCP</span>
-        <span class="badge tech-badge">DNS</span>
-        <span class="badge tech-badge">Peering</span>
-        <span class="badge tech-badge">Cisco IOS/NX-OS</span>
-        <span class="badge tech-badge">LACP</span>
-        <span class="badge tech-badge">QoS</span>
-        <span class="badge tech-badge">NAT</span>
-        <span class="badge tech-badge">Firewalls</span>
-        <span class="badge tech-badge">VPNs</span>
-        <span class="badge tech-badge">SDN (OpenFlow)</span>
-        <span class="badge tech-badge">802.1X</span>
-        <span class="badge tech-badge">RADIUS</span>
-        <span class="badge tech-badge">LDAP</span>
-        <span class="badge tech-badge">CDP</span>
-        <span class="badge tech-badge">Network Security</span>
-        <span class="badge tech-badge">Wireshark</span>
-      </div>
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Security</h3>
-        <span class="badge tech-badge">IDS/IPS (Snort, Suricata)</span>
-        <span class="badge tech-badge">SIEM (Splunk, Prometheus, Grafana, Loki)</span>
-        <span class="badge tech-badge">mTLS</span>
-        <span class="badge tech-badge">PKI</span>
-        <span class="badge tech-badge">Incident/Change Management</span>
-        <span class="badge tech-badge">Network Hardening</span>
-        <span class="badge tech-badge">Network Policies</span>
-        <span class="badge tech-badge">Hardened Kubernetes</span>
-      </div>
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Monitoring & Observability</h3>
-        <span class="badge tech-badge">Prometheus</span>
-        <span class="badge tech-badge">Grafana</span>
-        <span class="badge tech-badge">Splunk</span>
-        <span class="badge tech-badge">Loki</span>
-        <span class="badge tech-badge">SNMPv3 (Cisco)</span>
-        <span class="badge tech-badge">IPMI/BMC</span>
-        <span class="badge tech-badge">IMNI</span>
-        <span class="badge tech-badge">NetFlow</span>
-        <span class="badge tech-badge">sFlow</span>
-        <span class="badge tech-badge">Open-source NMS</span>
-        <span class="badge tech-badge">Test Equipment</span>
-      </div>
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Cloud & DevOps</h3>
-        <span class="badge tech-badge">AWS</span>
-        <span class="badge tech-badge">Microsoft Azure</span>
-        <span class="badge tech-badge">Azure Active Directory (Entra ID)</span>
-        <span class="badge tech-badge">Azure Arc</span>
-        <span class="badge tech-badge">Kubernetes (k8s/k3s)</span>
-        <span class="badge tech-badge">Docker</span>
-        <span class="badge tech-badge">Containerd</span>
-        <span class="badge tech-badge">Podman</span>
-        <span class="badge tech-badge">Terraform</span>
-        <span class="badge tech-badge">Ansible</span>
-        <span class="badge tech-badge">Jenkins</span>
-        <span class="badge tech-badge">Drone</span>
-        <span class="badge tech-badge">GitHub Actions</span>
-        <span class="badge tech-badge">Azure Pipelines</span>
-        <span class="badge tech-badge">ArgoCD</span>
-        <span class="badge tech-badge">CI/CD</span>
-      </div>
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Programming & Scripting</h3>
-        <span class="badge tech-badge">Python</span>
-        <span class="badge tech-badge">JavaScript</span>
-        <span class="badge tech-badge">TypeScript</span>
-        <span class="badge tech-badge">Java</span>
-        <span class="badge tech-badge">C++</span>
-        <span class="badge tech-badge">C</span>
-        <span class="badge tech-badge">Bash</span>
-        <span class="badge tech-badge">PowerShell</span>
-        <span class="badge tech-badge">Go</span>
-        <span class="badge tech-badge">R</span>
-        <span class="badge tech-badge">SAS</span>
-        <span class="badge tech-badge">Git</span>
-        <span class="badge tech-badge">REST APIs</span>
-        <span class="badge tech-badge">Automation</span>
-      </div>
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Frameworks & Tools</h3>
-        <span class="badge tech-badge">Kubespray</span>
-        <span class="badge tech-badge">Flask</span>
-        <span class="badge tech-badge">React</span>
-        <span class="badge tech-badge">TensorFlow</span>
-        <span class="badge tech-badge">Keras</span>
-        <span class="badge tech-badge">FastAPI</span>
-        <span class="badge tech-badge">Node.js</span>
-        <span class="badge tech-badge">Astro</span>
-        <span class="badge tech-badge">Jira</span>
-        <span class="badge tech-badge">Vanta</span>
-        <span class="badge tech-badge">Postman</span>
-        <span class="badge tech-badge">LaTeX</span>
-        <span class="badge tech-badge">Mininet</span>
-        <span class="badge tech-badge">WireGuard</span>
-      </div>
-      <div>
-        <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Databases & OS</h3>
-        <span class="badge tech-badge">MongoDB</span>
-        <span class="badge tech-badge">SQLite</span>
-        <span class="badge tech-badge">MySQL</span>
-        <span class="badge tech-badge">PostgreSQL</span>
-        <span class="badge tech-badge">Elasticsearch</span>
-        <span class="badge tech-badge">Redis</span>
-        <span class="badge tech-badge">Red Hat Enterprise Linux (RHEL)</span>
-        <span class="badge tech-badge">Debian</span>
-        <span class="badge tech-badge">Windows Server</span>
-        <span class="badge tech-badge">GNU/Linux</span>
-      </div>
-    </div>
-  </section>
+  <FeaturedProjects />
+  <Skills />
+  <!-- Certifications Section -->
 
   <!-- Network Topology -->
   <NetworkTopology />
 
-  <!-- Certifications -->
-  <Certifications />
+
 
   <!-- GitHub Projects -->
   <GitHubRepos />
 
 
-  <!-- Resume Section -->
-  <section id="resume">
-    <h2>Résumé</h2>
-    <div class="card resume-content">
-      <div class="resume-actions" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-        <a href="/resume.pdf" class="btn" download>
-          Download PDF →
-        </a>
-      </div>
-      <div class="resume-display">
-        <iframe src="/resume.pdf" width="100%" height="900px" style="border:none;"></iframe>
-        <div style="margin-top: 1rem; text-align: center;">
-          <noscript>
-            This browser does not support PDFs. Please download the PDF to view it: <a href="/resume.pdf">Download PDF</a>
-          </noscript>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <style>
-    .resume-content {
-      max-width: 100%;
-    }
-    .resume-display {
-      padding: 2rem 0;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      margin-top: 1rem;
-      max-width: 100%;
-      overflow-x: auto;
-      min-height: 900px;
-    }
-    }
 
-    .resume-display :global(hr) {
-      border: none;
-      border-top: 1px solid var(--border-base);
-      margin: 2rem 0;
-    }
-  </style>
+  <Resume />
+  <Blog />
 
-  <!-- Contact Section -->
-  <section id="contact">
-    <h2>Get In Touch</h2>
-    <div class="card">
-      <p style="margin-bottom: 1.5rem;">
-        I'm always interested in hearing about new opportunities, collaborations, or just connecting 
-        with fellow professionals in the networking and cloud space.
-      </p>
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-        <a href="https://linkedin.com/in/jashandeepjustinbains" target="_blank" rel="noopener noreferrer" class="btn">
-          LinkedIn Profile →
-        </a>
-        <a href="https://github.com/JashandeepJustinBains" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-          GitHub Profile →
-        </a>
-        <a href="mailto:jashandeepjbains@gmail.com" class="btn btn-secondary">
-          Email Me →
-        </a>
-      </div>
-    </div>
-  </section>
+
+
+<button id="darkModeToggle" style="position:fixed;top:1rem;right:1rem;z-index:1000;" class="btn btn-secondary">Toggle Dark Mode</button>
+
+<!-- All global styles and scripts for dark mode and print below -->
+<style>
+  :root {
+    --bg-primary: #fff;
+    --bg-secondary: #f3f4f6;
+    --bg-tertiary: #e5e7eb;
+    --text-primary: #1e293b;
+    --text-muted: #64748b;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1e40af;
+    --border-base: #d1d5db;
+    --radius-md: 16px;
+    --radius-base: 8px;
+    --space-2: 0.5rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --text-sm: 0.95rem;
+    --transition-all: 0.2s;
+  }
+  html.dark {
+    --bg-primary: #18181b;
+    --bg-secondary: #232336;
+    --bg-tertiary: #232336;
+    --text-primary: #f3f4f6;
+    --text-muted: #a1a1aa;
+    --color-primary: #60a5fa;
+    --color-primary-dark: #2563eb;
+    --border-base: #27272a;
+  }
+  body, html {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background 0.2s, color 0.2s;
+  }
+  @media print {
+    body, html {
+      background: #fff !important;
+      color: #000 !important;
+    }
+    header, nav, .hero, .btn, .projects-grid, .topology-container, .card:not(.resume-content), .resume-actions, .vpc-topology-grid, .topology-legend, .node-info-panel, .btn-small, .badge, .legend-items, .legend-item, .vpc-label, .vpc-node-link, .vpc-node-desc, .vpc-group:not(.resume-content) {
+      display: none !important;
+    }
+    .resume-content, .resume-display, #resume {
+      display: block !important;
+      background: #fff !important;
+      color: #000 !important;
+      box-shadow: none !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+    iframe {
+      width: 100vw !important;
+      height: 100vh !important;
+      border: none !important;
+    }
+  }
+  .resume-content {
+    max-width: 100%;
+  }
+  .resume-display {
+    padding: 2rem 0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-md);
+    margin-top: 1rem;
+    max-width: 100%;
+    overflow-x: auto;
+    min-height: 900px;
+  }
+</style>
+<script is:inline>
+  if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('darkModeToggle');
+      if (toggle) {
+        toggle.onclick = () => {
+          document.documentElement.classList.toggle('dark');
+        };
+      }
+    });
+  }
+</script>
+
+
+<style>
+  .resume-display :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border-base);
+    margin: 2rem 0;
+  }
+</style>
+
+<Contact />
 </BaseLayout>

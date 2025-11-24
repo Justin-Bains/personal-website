@@ -1,0 +1,85 @@
+---
+// Placeholder blog articles. In production, fetch from a CMS or markdown files.
+const articles = [
+  {
+    title: "Building a VPC-Centric Network Topology in Astro",
+    date: "2024-05-01",
+    summary: "A step-by-step guide to visualizing cloud and on-premises networks using Astro and modern CSS.",
+    url: "/blog/vpc-network-topology"
+  },
+  {
+    title: "Automating LaTeX Resume Workflows for Static Sites",
+    date: "2024-04-15",
+    summary: "How to automate LaTeX-to-PDF and Markdown conversion for seamless portfolio updates.",
+    url: "/blog/latex-resume-automation"
+  },
+  {
+    title: "Cloud Certifications: Which Path is Right for You?",
+    date: "2024-03-28",
+    summary: "A comparison of AWS, Azure, and Cisco certifications for network and cloud professionals.",
+    url: "/blog/cloud-certifications"
+  }
+];
+---
+<section class="blog-section">
+  <h2>Blog & Articles</h2>
+  <div class="blog-grid">
+    {articles.map(a => (
+      <a href={a.url} class="blog-card">
+        <div class="blog-title">{a.title}</div>
+        <div class="blog-date">{a.date}</div>
+        <div class="blog-summary">{a.summary}</div>
+      </a>
+    ))}
+  </div>
+</section>
+<style>
+.blog-section {
+  margin: 3rem 0 2rem 0;
+  padding: 2rem 0 1rem 0;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+.blog-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.blog-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+.blog-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-base);
+  padding: 1.5rem 1.25rem;
+  max-width: 340px;
+  min-width: 260px;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.blog-card:hover {
+  border: 1.5px solid var(--color-primary);
+  box-shadow: 0 2px 12px 0 rgba(60,120,255,0.08);
+}
+.blog-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.blog-date {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+.blog-summary {
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+</style>
