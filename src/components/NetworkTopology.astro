@@ -1,200 +1,889 @@
 ---
-
+// NetworkTopology.astro - Interactive Kubernetes/VM Cluster Network Topology
+// Uses vis-network library for visualization with Low-load and Full-Deployment toggle
+---
 
 <section id="homelab">
   <h2>Homelab Network Topology</h2>
   <div class="topology-container">
     <div class="topology-header">
-      <p>Interactive Kubernetes pod topology showing services and their connections across the 3-node VMStation cluster</p>
+      <p>Interactive network topology showing physical infrastructure, virtual machines, and Kubernetes services across the VMStation cluster</p>
       <div class="topology-controls">
         <label class="switch">
           <input type="checkbox" id="modeSwitch" />
           <span class="slider"></span>
+        </label>
+        <span id="modeLabel" class="mode-label">Low-load</span>
+        <button id="resetView" class="btn btn-small">Reset View</button>
+      </div>
+    </div>
+    
+    <div class="topology-grid">
+      <div class="topology-main">
+        <div id="network-topology-vpcs" class="network-canvas-wrapper">
+          <div id="network-topology" class="network-canvas"></div>
+        </div>
+      </div>
+      
+      <div class="topology-sidebar">
+        <div class="legend-panel">
+          <h4>Legend</h4>
+          <div id="legend-items" class="legend-items">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+        
+        <div class="node-info-panel" id="node-info">
+          <h3>Select a node to view details</h3>
+          <p>Click on any server, device, or service in the topology to see specifications and role information.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #homelab {
+    padding: var(--space-8, 2rem) 0;
+  }
+  
+  .topology-container {
+    background: var(--bg-secondary, #ffffff);
+    border: 1px solid var(--border-base, #e2e8f0);
+    border-radius: var(--radius-lg, 16px);
+    padding: var(--space-6, 1.5rem);
+    margin-top: var(--space-6, 1.5rem);
+  }
+  
+  .topology-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4, 1rem);
+    margin-bottom: var(--space-6, 1.5rem);
+  }
+  
+  .topology-header p {
+    color: var(--text-muted, #64748b);
+    margin: 0;
+  }
+  
+  .topology-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4, 1rem);
+    flex-wrap: wrap;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #64748b;
+    transition: 0.4s;
+    border-radius: 30px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: var(--color-primary, #2563eb);
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(30px);
+  }
+  
+  .mode-label {
+    font-weight: var(--font-semibold, 600);
+    color: var(--text-primary, #1e293b);
+    min-width: 120px;
+  }
+  
+  .topology-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--space-6, 1.5rem);
+  }
+  
+  @media (max-width: 1024px) {
+    .topology-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .topology-main {
+    min-height: 600px;
+  }
+  
+  .network-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: var(--radius-md, 12px);
+    border: 1px solid var(--border-base, #e2e8f0);
+    overflow: hidden;
+  }
+  
+  .network-canvas {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .topology-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4, 1rem);
+  }
+  
+  .legend-panel {
+    background: var(--bg-tertiary, #f8fafc);
+    border: 1px solid var(--border-base, #e2e8f0);
+    border-radius: var(--radius-md, 12px);
+    padding: var(--space-4, 1rem);
+  }
+  
+  .legend-panel h4 {
+    color: var(--text-primary, #1e293b);
+    margin-bottom: var(--space-3, 0.75rem);
+    font-size: var(--text-base, 1rem);
+  }
+  
+  .legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2, 0.5rem);
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--text-secondary, #475569);
+  }
+  
+  .legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.1);
+    flex-shrink: 0;
+  }
+  
+  .node-info-panel {
+    background: var(--bg-tertiary, #f8fafc);
+    border: 1px solid var(--border-base, #e2e8f0);
+    border-radius: var(--radius-md, 12px);
+    padding: var(--space-4, 1rem);
+    flex: 1;
+    min-height: 250px;
+  }
+  
+  .node-info-panel h3 {
+    color: var(--text-primary, #1e293b);
+    margin-bottom: var(--space-3, 0.75rem);
+    font-size: var(--text-lg, 1.125rem);
+  }
+  
+  .node-info-panel p {
+    color: var(--text-muted, #64748b);
+    margin-bottom: var(--space-2, 0.5rem);
+    font-size: var(--text-sm, 0.875rem);
+    line-height: 1.5;
+  }
+  
+  .node-info-panel h4 {
+    color: var(--color-secondary, #0ea5e9);
+    font-size: var(--text-base, 1rem);
+    margin: var(--space-3, 0.75rem) 0 var(--space-2, 0.5rem) 0;
+  }
+  
+  .btn-small {
+    padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+    font-size: var(--text-sm, 0.875rem);
+    background: var(--color-primary, #2563eb);
+    color: white;
+    border: none;
+    border-radius: var(--radius-base, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-small:hover {
+    background: var(--color-primary-dark, #1e40af);
+    transform: translateY(-1px);
+  }
+  
+  .repo-link {
+    display: inline-block;
+    margin-top: var(--space-4, 1rem);
+    padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+    background: var(--color-primary, #2563eb);
+    color: white;
+    border-radius: var(--radius-base, 8px);
+    text-decoration: none;
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-medium, 500);
+    transition: all 0.2s ease;
+  }
+  
+  .repo-link:hover {
+    background: var(--color-primary-dark, #1e40af);
+    color: white;
+  }
+  
+  /* VPC Overlay styles */
+  :global(.vpc-overlay) {
+    position: absolute;
+    border-radius: 24px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  :global(.vpc-overlay span) {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  :global(.cloud-tunnel) {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+  }
+  
+  :global(.cloud-tunnel span) {
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 768px) {
+    .topology-controls {
       justify-content: flex-start;
     }
     
     .btn-small {
       flex: 1;
     }
+    
+    .network-canvas-wrapper {
+      height: 450px;
+    }
   }
 </style>
 
-<script>
-  import { Network } from 'vis-network/standalone';
+<script type="module">
+  import { Network, DataSet } from 'vis-network/standalone';
   
-  // Store Network class globally for use in the data script
-  window.VisNetwork = Network;
-  // Dispatch event to signal that vis-network is loaded
-  window.dispatchEvent(new Event('visNetworkLoaded'));
-</script>
-
-<script define:vars={{ pods, connections, physicalNodes }}>
-  // Wait for vis-network to load
-  function initializeTopology() {
-    const Network = window.VisNetwork;
-    
-    if (!Network) {
-      console.error('VisNetwork not loaded yet');
-      return;
+  // Node and edge data definitions
+  const physicalNodes = [
+    {
+      id: 'masternode',
+      label: 'masternode',
+      ip: '192.168.4.63',
+      os: 'Debian 12',
+      role: 'Control Plane',
+      cpu: 'Intel Xeon E5-2620 v4',
+      ram: '64GB DDR4 ECC',
+      storage: '500GB SSD',
+      status: 'Always-on',
+      description: 'Kubernetes control plane node running cluster management services'
+    },
+    {
+      id: 'storagenodet3500',
+      label: 'storagenodet3500',
+      ip: '192.168.4.61',
+      os: 'Debian 12',
+      role: 'Worker (Storage)',
+      cpu: 'Intel Xeon E5-2670',
+      ram: '32GB DDR3 ECC',
+      storage: '8TB RAID Array',
+      status: 'Auto-sleep enabled',
+      description: 'Storage-focused worker node with large capacity for persistent volumes and local repo'
+    },
+    {
+      id: 'homelab',
+      label: 'homelab',
+      ip: '192.168.4.62',
+      os: 'RHEL 10',
+      role: 'Worker (Compute)',
+      cpu: 'Intel Xeon E5-2680 v3',
+      ram: '128GB DDR4 ECC',
+      storage: '1TB NVMe SSD',
+      status: 'Auto-sleep enabled',
+      description: 'High-performance compute worker node with IPMI/BMC for hardware monitoring'
     }
+  ];
   
-  // Transform pods to vis-network format
-  const nodes = pods.map(pod => ({
-    id: pod.id,
-    label: pod.label,
-    group: pod.group,
-    title: `${pod.label}\nHost: ${pod.physicalNode}\nIP: ${pod.hostIP}${pod.port ? '\nPort: ' + pod.port : ''}`,
-    physicalNode: pod.physicalNode,
-    physicalNodeColor: pod.physicalNodeColor,
-    port: pod.port,
-    url: pod.url,
-    description: pod.description,
-    hostIP: pod.hostIP
-  }));
-  
+  const ciscoSwitch = {
+    id: 'cisco-3650',
+    label: 'Cisco 3650',
+    type: 'switch',
+    description: 'Central L3 switch with LACP bonding, VLAN support, traffic mirroring for IDS/IPS',
+    features: ['LACP', 'VLANs', 'Traffic Mirroring', 'QoS', 'SNMPv3']
   };
   
-  const network = new Network(container, data, options);
+  // Low-load mode data (essential services only)
+  const lowLoadNodes = [
+    // Physical infrastructure
+    { id: 'cisco-3650', label: 'Cisco 3650\nSwitch', group: 'network-hardware', title: 'Central L3 Switch\nLACP, VLANs, Traffic Mirroring' },
+    { id: 'masternode', label: 'masternode\n192.168.4.63', group: 'physical-server', title: 'Control Plane\nDebian 12\nAlways-on' },
+    { id: 'storagenodet3500', label: 'storagenodet3500\n192.168.4.61', group: 'physical-server', title: 'Storage Worker\nDebian 12\nAuto-sleep' },
+    { id: 'homelab', label: 'homelab\n192.168.4.62', group: 'physical-server', title: 'Compute Worker\nRHEL 10\nAuto-sleep' },
+    
+    // Essential K8s Services
+    { id: 'prometheus', label: 'Prometheus', group: 'monitoring', title: 'Metrics Collection\nPort 9090' },
+    { id: 'grafana', label: 'Grafana', group: 'monitoring', title: 'Dashboards\nPort 3000' },
+    { id: 'coredns', label: 'CoreDNS', group: 'infrastructure', title: 'Cluster DNS\nPort 53' },
+    
+    // Cloud connection
+    { id: 'cloudflared', label: 'Cloudflared\nTunnel', group: 'cloud', title: 'Azure Web App Tunnel' },
+    { id: 'azure-webapp', label: 'Azure Web App', group: 'cloud', title: 'Public Web Frontend' }
+  ];
   
-  // Handle node selection
-  network.on('selectNode', function(params) {
-    if (params.nodes.length > 0) {
-      const nodeId = params.nodes[0];
-      const podData = pods.find(n => n.id === nodeId);
-      
-      if (podData) {
-        const infoPanel = document.getElementById('node-info');
-        let html = `
-          <h3>${podData.label}</h3>
-          <p><strong>Type:</strong> ${podData.group.replace('-', ' ').toUpperCase()}</p>
-          <p><strong>Physical Host:</strong> ${podData.physicalNode}</p>
-          <p><strong>Host IP:</strong> ${podData.hostIP}</p>
-        `;
-        
-        if (podData.port) {
-          html += `<p><strong>Port:</strong> ${podData.port}</p>`;
-        }
-        
-        if (podData.url) {
-          html += `<p><strong>Access URL:</strong> <a href="${podData.url}" target="_blank" style="color: var(--color-primary);">${podData.url}</a></p>`;
-        }
-        
-        if (podData.description) {
-          html += `
-            <div style="margin-top: 1rem;">
-              <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">Description</h4>
-              <p>${podData.description}</p>
-            </div>
-          `;
-        }
-        
-        // Show physical node details
-        const physNode = physicalNodes.find(n => n.label === podData.physicalNode);
-        if (physNode) {
-          html += `
-            <div style="margin-top: 1rem;">
-              <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">Host Node Details</h4>
-              <p><strong>CPU:</strong> ${physNode.specs.cpu}</p>
-              <p><strong>RAM:</strong> ${physNode.specs.ram}</p>
-              <p><strong>OS:</strong> ${physNode.specs.os}</p>
-              <p><strong>Status:</strong> ${physNode.status}</p>
-            </div>
-          `;
-        }
-        
-        html += `
-          <a href="https://github.com/JashandeepJustinBains/VMStation" target="_blank" rel="noopener noreferrer" class="btn repo-link">
-            View VMStation Repo on GitHub →
-          </a>
-        `;
-        
-        infoPanel.innerHTML = html;
+  const lowLoadEdges = [
+    // Physical connections to switch
+    { from: 'masternode', to: 'cisco-3650', color: { color: '#22c55e' }, width: 3, title: 'LACP Bond' },
+    { from: 'storagenodet3500', to: 'cisco-3650', color: { color: '#22c55e' }, width: 2 },
+    { from: 'homelab', to: 'cisco-3650', color: { color: '#22c55e' }, width: 2 },
+    
+    // Service connections
+    { from: 'prometheus', to: 'masternode', dashes: true, color: { color: '#16a34a' } },
+    { from: 'grafana', to: 'prometheus', dashes: true, color: { color: '#16a34a' } },
+    { from: 'coredns', to: 'masternode', dashes: true, color: { color: '#6366f1' } },
+    
+    // Cloud tunnel
+    { from: 'cloudflared', to: 'masternode', dashes: [5, 5], color: { color: '#2563eb' }, title: 'Secure Tunnel' },
+    { from: 'azure-webapp', to: 'cloudflared', dashes: [5, 5], color: { color: '#2563eb' } }
+  ];
+  
+  // Full deployment mode data
+  const fullDeploymentNodes = [
+    // Physical Infrastructure
+    { id: 'cisco-3650', label: 'Cisco 3650\nL3 Switch', group: 'network-hardware', title: 'Central L3 Switch\nLACP, VLANs, Traffic Mirroring, QoS, SNMPv3', size: 35 },
+    { id: 'masternode', label: 'masternode\n192.168.4.63\nDebian 12', group: 'physical-server', title: 'Control Plane\nIntel Xeon E5-2620 v4\n64GB RAM\nAlways-on', size: 40 },
+    { id: 'storagenodet3500', label: 'storagenodet3500\n192.168.4.61\nDebian 12', group: 'physical-server', title: 'Storage Worker\nIntel Xeon E5-2670\n32GB RAM\n8TB RAID\nAuto-sleep', size: 40 },
+    { id: 'homelab', label: 'homelab\n192.168.4.62\nRHEL 10', group: 'physical-server', title: 'Compute Worker\nIntel Xeon E5-2680 v3\n128GB RAM\nIPMI/BMC\nAuto-sleep', size: 40 },
+    
+    // CI/CD & Storage
+    { id: 'drone-ci', label: 'Drone CI/CD', group: 'devops', title: 'CI/CD Pipeline Server\nContainer Image Building' },
+    { id: 'drone-storage', label: 'Drone Storage\nServer', group: 'storage', title: 'Image Storage & Private Repo\nQuick Clone & Setup' },
+    { id: 'local-repo', label: 'Local Repo\n(OS Images)', group: 'storage', title: 'Pre-downloaded Images\nCisco IOS, Splunk, Linux, Windows ISOs' },
+    
+    // Kubernetes Core Services
+    { id: 'kubespray', label: 'Kubespray', group: 'k8s-core', title: 'Cluster Automation & Deployment' },
+    { id: 'prometheus', label: 'Prometheus', group: 'monitoring', title: 'Metrics Collection\nPort 9090' },
+    { id: 'grafana', label: 'Grafana', group: 'monitoring', title: 'Dashboards & Visualization\nPort 3000' },
+    { id: 'loki', label: 'Loki', group: 'monitoring', title: 'Log Aggregation' },
+    { id: 'promtail', label: 'Promtail', group: 'monitoring', title: 'Log Shipping Agent' },
+    { id: 'node-exporter', label: 'Node Exporter', group: 'monitoring', title: 'System Metrics' },
+    { id: 'ipmi-exporter', label: 'IPMI Exporter', group: 'monitoring', title: 'Hardware Monitoring\n(homelab node)' },
+    { id: 'blackbox-exporter', label: 'Blackbox Exporter', group: 'monitoring', title: 'HTTP/DNS Probes' },
+    { id: 'kube-state-metrics', label: 'kube-state-metrics', group: 'monitoring', title: 'Kubernetes Object Metrics' },
+    
+    // Infrastructure Services
+    { id: 'coredns', label: 'CoreDNS', group: 'infrastructure', title: 'Cluster DNS & DHCP' },
+    { id: 'chrony', label: 'Chrony NTP', group: 'infrastructure', title: 'Time Synchronization' },
+    { id: 'syslog-server', label: 'Syslog Server', group: 'infrastructure', title: 'Centralized Logs → Loki' },
+    
+    // Security & Identity
+    { id: 'freeipa', label: 'FreeIPA/Kerberos', group: 'security', title: 'SSO, LDAP, DNS, CA\nKerberos KDC' },
+    { id: 'radius', label: 'RADIUS Server', group: 'security', title: '802.1x Wi-Fi Auth\nFreeRADIUS + FreeIPA' },
+    { id: 'pki-ca', label: 'PKI/CA', group: 'security', title: 'Internal Certificate Authority' },
+    
+    // SIEM & Analytics
+    { id: 'splunk', label: 'Splunk Enterprise\n9.4.2', group: 'siem', title: 'SIEM & Log Analytics\nReceives logs from all systems' },
+    { id: 'ibm-spss', label: 'IBM SPSS 27', group: 'analytics', title: 'Analytics Workloads' },
+    
+    // Windows VMs
+    { id: 'win-server-2019', label: 'Windows Server\n2019', group: 'windows-vm', title: 'Legacy App Testing\nAD DC' },
+    { id: 'win-server-2022', label: 'Windows Server\n2022', group: 'windows-vm', title: 'Malware Analysis\nAD DC, Entra-ID' },
+    { id: 'ad-dc', label: 'Active Directory\nDomain Controllers', group: 'windows-vm', title: 'Authentication, GPO\nDomain Services' },
+    
+    // Enterprise Linux VMs
+    { id: 'rocky-linux', label: 'Rocky Linux 9', group: 'enterprise-linux', title: 'Enterprise Testing\nSecurity Services' },
+    { id: 'alma-linux', label: 'AlmaLinux 9', group: 'enterprise-linux', title: 'Infrastructure Roles' },
+    { id: 'oracle-linux', label: 'Oracle Linux 9', group: 'enterprise-linux', title: 'Enterprise Testing' },
+    
+    // Network Simulation
+    { id: 'cisco-ios-vms', label: 'Cisco IOS VMs\n(GNS3/EVE-NG)', group: 'network-sim', title: 'Virtual Routers\nRouting/Switching Labs' },
+    
+    // Cloud Connection
+    { id: 'cloudflared', label: 'Cloudflared\nTunnel', group: 'cloud', title: 'Secure Tunnel to Azure' },
+    { id: 'azure-webapp', label: 'Azure Web App', group: 'cloud', title: 'Public Web Frontend' },
+    { id: 'azure-arc', label: 'Azure Arc', group: 'cloud', title: 'Hybrid Cloud Management' },
+    
+    // Malware Analysis Lab
+    { id: 'suricata', label: 'Suricata IDS/IPS', group: 'security', title: 'Intrusion Detection\nNetwork Analysis' },
+    { id: 'malware-lab', label: 'Malware Analysis\nLab', group: 'security', title: 'Isolated Environment\nVLAN Isolated' }
+  ];
+  
+  const fullDeploymentEdges = [
+    // Physical connections to Cisco Switch (LACP and standard)
+    { from: 'masternode', to: 'cisco-3650', color: { color: '#22c55e' }, width: 4, title: 'LACP Bond (4x1Gbps)' },
+    { from: 'storagenodet3500', to: 'cisco-3650', color: { color: '#22c55e' }, width: 3, title: '2x1Gbps' },
+    { from: 'homelab', to: 'cisco-3650', color: { color: '#22c55e' }, width: 3, title: '2x1Gbps' },
+    
+    // CI/CD Workflow
+    { from: 'drone-ci', to: 'masternode', dashes: true, color: { color: '#f97316' }, title: 'CI/CD Pipeline' },
+    { from: 'drone-ci', to: 'drone-storage', color: { color: '#f97316' }, title: 'Image Push' },
+    { from: 'drone-storage', to: 'storagenodet3500', color: { color: '#64748b' }, title: 'Storage Backend' },
+    { from: 'local-repo', to: 'storagenodet3500', color: { color: '#64748b' } },
+    
+    // Kubespray deployment
+    { from: 'kubespray', to: 'masternode', dashes: true, color: { color: '#8b5cf6' } },
+    { from: 'kubespray', to: 'storagenodet3500', dashes: true, color: { color: '#8b5cf6' } },
+    { from: 'kubespray', to: 'homelab', dashes: true, color: { color: '#8b5cf6' } },
+    
+    // Monitoring stack connections
+    { from: 'prometheus', to: 'masternode', dashes: true, color: { color: '#16a34a' } },
+    { from: 'grafana', to: 'prometheus', dashes: true, color: { color: '#16a34a' } },
+    { from: 'grafana', to: 'loki', dashes: true, color: { color: '#16a34a' } },
+    { from: 'loki', to: 'promtail', dashes: true, color: { color: '#16a34a' } },
+    { from: 'prometheus', to: 'node-exporter', dashes: true, color: { color: '#16a34a' } },
+    { from: 'prometheus', to: 'ipmi-exporter', dashes: true, color: { color: '#16a34a' } },
+    { from: 'ipmi-exporter', to: 'homelab', dashes: true, color: { color: '#16a34a' }, title: 'IPMI/BMC' },
+    { from: 'prometheus', to: 'blackbox-exporter', dashes: true, color: { color: '#16a34a' } },
+    { from: 'prometheus', to: 'kube-state-metrics', dashes: true, color: { color: '#16a34a' } },
+    { from: 'syslog-server', to: 'loki', dashes: true, color: { color: '#16a34a' } },
+    { from: 'syslog-server', to: 'cisco-3650', dashes: true, color: { color: '#16a34a' }, title: 'Syslog' },
+    
+    // Infrastructure services
+    { from: 'coredns', to: 'masternode', dashes: true, color: { color: '#6366f1' } },
+    { from: 'chrony', to: 'masternode', dashes: true, color: { color: '#6366f1' } },
+    { from: 'chrony', to: 'storagenodet3500', dashes: true, color: { color: '#6366f1' } },
+    { from: 'chrony', to: 'homelab', dashes: true, color: { color: '#6366f1' } },
+    
+    // Security services
+    { from: 'freeipa', to: 'masternode', dashes: true, color: { color: '#dc2626' } },
+    { from: 'radius', to: 'freeipa', dashes: true, color: { color: '#dc2626' }, title: '802.1x Auth' },
+    { from: 'pki-ca', to: 'freeipa', dashes: true, color: { color: '#dc2626' } },
+    { from: 'suricata', to: 'cisco-3650', dashes: true, color: { color: '#dc2626' }, title: 'Traffic Mirror' },
+    { from: 'malware-lab', to: 'suricata', dashes: true, color: { color: '#dc2626' } },
+    
+    // SIEM connections
+    { from: 'splunk', to: 'syslog-server', dashes: true, color: { color: '#eab308' } },
+    { from: 'splunk', to: 'suricata', dashes: true, color: { color: '#eab308' } },
+    { from: 'ibm-spss', to: 'homelab', dashes: true, color: { color: '#eab308' } },
+    
+    // Windows VMs
+    { from: 'win-server-2019', to: 'homelab', dashes: true, color: { color: '#0ea5e9' } },
+    { from: 'win-server-2022', to: 'homelab', dashes: true, color: { color: '#0ea5e9' } },
+    { from: 'ad-dc', to: 'win-server-2019', dashes: true, color: { color: '#0ea5e9' } },
+    { from: 'ad-dc', to: 'win-server-2022', dashes: true, color: { color: '#0ea5e9' } },
+    { from: 'malware-lab', to: 'win-server-2022', dashes: true, color: { color: '#dc2626' } },
+    
+    // Enterprise Linux VMs
+    { from: 'rocky-linux', to: 'homelab', dashes: true, color: { color: '#22d3ee' } },
+    { from: 'alma-linux', to: 'homelab', dashes: true, color: { color: '#22d3ee' } },
+    { from: 'oracle-linux', to: 'homelab', dashes: true, color: { color: '#22d3ee' } },
+    
+    // Network simulation
+    { from: 'cisco-ios-vms', to: 'homelab', dashes: true, color: { color: '#a855f7' } },
+    { from: 'cisco-ios-vms', to: 'cisco-3650', dashes: true, color: { color: '#a855f7' }, title: 'Lab Network' },
+    
+    // Cloud connections
+    { from: 'cloudflared', to: 'masternode', dashes: [5, 5], color: { color: '#2563eb' }, width: 2, title: 'Secure Tunnel' },
+    { from: 'azure-webapp', to: 'cloudflared', dashes: [5, 5], color: { color: '#2563eb' }, width: 2 },
+    { from: 'azure-arc', to: 'masternode', dashes: [5, 5], color: { color: '#2563eb' }, title: 'Hybrid Mgmt' }
+  ];
+  
+  // Node group styling
+  const groupStyles = {
+    'network-hardware': { color: { background: '#f97316', border: '#ea580c' }, shape: 'diamond', font: { color: '#fff' } },
+    'physical-server': { color: { background: '#22c55e', border: '#16a34a' }, shape: 'box', font: { color: '#fff' } },
+    'monitoring': { color: { background: '#16a34a', border: '#15803d' }, shape: 'ellipse', font: { color: '#fff' } },
+    'infrastructure': { color: { background: '#6366f1', border: '#4f46e5' }, shape: 'ellipse', font: { color: '#fff' } },
+    'security': { color: { background: '#dc2626', border: '#b91c1c' }, shape: 'hexagon', font: { color: '#fff' } },
+    'siem': { color: { background: '#eab308', border: '#ca8a04' }, shape: 'ellipse', font: { color: '#000' } },
+    'analytics': { color: { background: '#f59e0b', border: '#d97706' }, shape: 'ellipse', font: { color: '#000' } },
+    'windows-vm': { color: { background: '#0ea5e9', border: '#0284c7' }, shape: 'box', font: { color: '#fff' } },
+    'enterprise-linux': { color: { background: '#22d3ee', border: '#06b6d4' }, shape: 'box', font: { color: '#000' } },
+    'network-sim': { color: { background: '#a855f7', border: '#9333ea' }, shape: 'triangle', font: { color: '#fff' } },
+    'cloud': { color: { background: '#2563eb', border: '#1d4ed8' }, shape: 'star', font: { color: '#fff' } },
+    'devops': { color: { background: '#f97316', border: '#ea580c' }, shape: 'ellipse', font: { color: '#fff' } },
+    'storage': { color: { background: '#64748b', border: '#475569' }, shape: 'database', font: { color: '#fff' } },
+    'k8s-core': { color: { background: '#8b5cf6', border: '#7c3aed' }, shape: 'ellipse', font: { color: '#fff' } }
+  };
+  
+  // Legend data for each mode
+  const lowLoadLegend = [
+    { color: '#f97316', label: 'Network Hardware' },
+    { color: '#22c55e', label: 'Physical Servers' },
+    { color: '#16a34a', label: 'Monitoring' },
+    { color: '#6366f1', label: 'Infrastructure' },
+    { color: '#2563eb', label: 'Cloud Services' }
+  ];
+  
+  const fullDeploymentLegend = [
+    { color: '#f97316', label: 'Network Hardware / DevOps' },
+    { color: '#22c55e', label: 'Physical Servers' },
+    { color: '#16a34a', label: 'Monitoring Stack' },
+    { color: '#6366f1', label: 'Infrastructure Services' },
+    { color: '#dc2626', label: 'Security & Identity' },
+    { color: '#eab308', label: 'SIEM & Analytics' },
+    { color: '#0ea5e9', label: 'Windows VMs' },
+    { color: '#22d3ee', label: 'Enterprise Linux VMs' },
+    { color: '#a855f7', label: 'Network Simulation' },
+    { color: '#2563eb', label: 'Cloud Services' },
+    { color: '#64748b', label: 'Storage' },
+    { color: '#8b5cf6', label: 'K8s Core' }
+  ];
+  
+  // Node details for info panel
+  const nodeDetails = {
+    'cisco-3650': { ...ciscoSwitch },
+    'masternode': { ...physicalNodes[0] },
+    'storagenodet3500': { ...physicalNodes[1] },
+    'homelab': { ...physicalNodes[2] },
+    'drone-ci': { label: 'Drone CI/CD', description: 'Continuous Integration/Deployment server for automated builds and container image creation', role: 'DevOps' },
+    'drone-storage': { label: 'Drone Storage Server', description: 'Stores container images and hosts private repo for quick cloning and setup', role: 'Storage' },
+    'local-repo': { label: 'Local Repository', description: 'Pre-downloaded OS/application images (Cisco IOS, Splunk, Linux distros, Windows ISOs) for fast provisioning', role: 'Storage' },
+    'prometheus': { label: 'Prometheus', description: 'Metrics collection and alerting. Scrapes all exporters and infrastructure services.', port: '9090', role: 'Monitoring' },
+    'grafana': { label: 'Grafana', description: 'Dashboards for nodes, cluster, logs, syslog, CoreDNS, hardware metrics', port: '3000', role: 'Monitoring' },
+    'loki': { label: 'Loki', description: 'Log aggregation system, receives logs from all nodes and syslog sources', role: 'Monitoring' },
+    'promtail': { label: 'Promtail', description: 'Log shipping agent that forwards logs to Loki', role: 'Monitoring' },
+    'node-exporter': { label: 'Node Exporter', description: 'Exposes system-level metrics for Prometheus', role: 'Monitoring' },
+    'ipmi-exporter': { label: 'IPMI Exporter', description: 'Hardware metrics from BMC/IPMI on homelab node', role: 'Monitoring' },
+    'blackbox-exporter': { label: 'Blackbox Exporter', description: 'Probes for HTTP/DNS endpoint monitoring', role: 'Monitoring' },
+    'kube-state-metrics': { label: 'kube-state-metrics', description: 'Exposes Kubernetes object metrics to Prometheus', role: 'Monitoring' },
+    'coredns': { label: 'CoreDNS', description: 'Lab DNS and DHCP services for isolated network', port: '53', role: 'Infrastructure' },
+    'chrony': { label: 'Chrony NTP', description: 'Cluster-wide time synchronization service', role: 'Infrastructure' },
+    'syslog-server': { label: 'Syslog Server', description: 'Centralized syslog collection, forwards to Loki. Receives logs from network devices.', role: 'Infrastructure' },
+    'kubespray': { label: 'Kubespray', description: 'Main deployment method for cluster automation using Ansible', role: 'K8s Core' },
+    'freeipa': { label: 'FreeIPA/Kerberos', description: 'SSO and identity management. Provides Kerberos KDC, LDAP, DNS, and CA. Used for SSO, Samba integration, and 802.1x RADIUS authentication.', role: 'Security' },
+    'radius': { label: 'RADIUS Server', description: 'For 802.1x Wi-Fi authentication using FreeRADIUS integrated with FreeIPA', role: 'Security' },
+    'pki-ca': { label: 'PKI/CA', description: 'Internal Certificate Authority for PKI services', role: 'Security' },
+    'suricata': { label: 'Suricata IDS/IPS', description: 'Intrusion Detection/Prevention System for network analysis and security monitoring', role: 'Security' },
+    'malware-lab': { label: 'Malware Analysis Lab', description: 'Isolated environment with Windows/Linux VMs, IDS/IPS, Splunk, and security services. VLAN and network isolation enforced.', role: 'Security' },
+    'splunk': { label: 'Splunk Enterprise 9.4.2', description: 'SIEM deployed in VM or container. Receives logs from all VMs and network devices.', role: 'SIEM' },
+    'ibm-spss': { label: 'IBM SPSS 27', description: 'Analytics workloads container/VM for statistical analysis', role: 'Analytics' },
+    'win-server-2019': { label: 'Windows Server 2019', description: 'Legacy app testing and Active Directory Domain Controller', os: 'Windows Server 2019', role: 'Windows VM' },
+    'win-server-2022': { label: 'Windows Server 2022', description: 'Modern malware analysis and AD DC with Entra-ID', os: 'Windows Server 2022', role: 'Windows VM' },
+    'ad-dc': { label: 'Active Directory DCs', description: 'Windows Server VMs running Entra-ID (Active Directory). Used for authentication, GPO, and domain services.', role: 'Windows VM' },
+    'rocky-linux': { label: 'Rocky Linux 9', description: 'Enterprise-grade testing, security services, and infrastructure roles', os: 'Rocky Linux 9', role: 'Enterprise Linux' },
+    'alma-linux': { label: 'AlmaLinux 9', description: 'Enterprise Linux for infrastructure roles', os: 'AlmaLinux 9', role: 'Enterprise Linux' },
+    'oracle-linux': { label: 'Oracle Linux 9', description: 'Enterprise testing environment', os: 'Oracle Linux 9', role: 'Enterprise Linux' },
+    'cisco-ios-vms': { label: 'Cisco IOS VMs', description: 'Virtual routers for routing/switching labs using GNS3/EVE-NG. Advanced network simulation and training.', role: 'Network Simulation' },
+    'cloudflared': { label: 'Cloudflared Tunnel', description: 'Secure tunnel connecting on-premises cluster to Azure Web Apps', role: 'Cloud' },
+    'azure-webapp': { label: 'Azure Web App', description: 'Public web frontend hosted on Azure', role: 'Cloud' },
+    'azure-arc': { label: 'Azure Arc', description: 'Hybrid cloud management for on-premises resources', role: 'Cloud' }
+  };
+  
+  // Network options
+  const networkOptions = {
+    nodes: {
+      font: { size: 12, face: 'Inter, -apple-system, sans-serif' },
+      borderWidth: 2,
+      shadow: true,
+      scaling: { min: 20, max: 40 }
+    },
+    edges: {
+      width: 1.5,
+      smooth: { type: 'continuous', roundness: 0.2 },
+      arrows: { to: { enabled: false } },
+      shadow: false
+    },
+    groups: groupStyles,
+    physics: {
+      enabled: true,
+      solver: 'forceAtlas2Based',
+      forceAtlas2Based: {
+        gravitationalConstant: -50,
+        centralGravity: 0.01,
+        springLength: 150,
+        springConstant: 0.08,
+        damping: 0.4
+      },
+      stabilization: {
+        enabled: true,
+        iterations: 200,
+        updateInterval: 25
       }
+    },
+    interaction: {
+      hover: true,
+      tooltipDelay: 200,
+      navigationButtons: false,
+      keyboard: true
     }
-  });
+  };
   
-  // Handle deselection
-  network.on('deselectNode', function() {
+  // Initialize the topology
+  function initTopology() {
+    const container = document.getElementById('network-topology');
+    const modeSwitch = document.getElementById('modeSwitch');
+    const modeLabel = document.getElementById('modeLabel');
+    const legendContainer = document.getElementById('legend-items');
     const infoPanel = document.getElementById('node-info');
-    infoPanel.innerHTML = `
-      <h3>Select a node to view details</h3>
-      <p>Click on any server or device in the topology to see specifications and role information.</p>
-    `;
-  });
-  
-  // Control buttons
-  document.getElementById('resetView')?.addEventListener('click', () => {
-    network.fit({
-      animation: {
-        duration: 1000,
-        easingFunction: 'easeInOutQuad'
+    const resetBtn = document.getElementById('resetView');
+    
+    if (!container) {
+      console.error('Network topology container not found');
+      return;
+    }
+    
+    let currentMode = 'low-load';
+    let network = null;
+    
+    // Render legend
+    function renderLegend(legendData) {
+      legendContainer.innerHTML = legendData.map(item => `
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: ${item.color};"></span>
+          <span>${item.label}</span>
+        </div>
+      `).join('');
+    }
+    
+    // Update info panel
+    function updateInfoPanel(nodeId) {
+      const details = nodeDetails[nodeId];
+      if (!details) {
+        infoPanel.innerHTML = `
+          <h3>Select a node to view details</h3>
+          <p>Click on any server, device, or service in the topology to see specifications and role information.</p>
+        `;
+        return;
+      }
+      
+      let html = `<h3>${details.label}</h3>`;
+      
+      if (details.role) {
+        html += `<p><strong>Type:</strong> ${details.role}</p>`;
+      }
+      
+      if (details.ip) {
+        html += `<p><strong>IP Address:</strong> ${details.ip}</p>`;
+      }
+      
+      if (details.os) {
+        html += `<p><strong>OS:</strong> ${details.os}</p>`;
+      }
+      
+      if (details.port) {
+        html += `<p><strong>Port:</strong> ${details.port}</p>`;
+      }
+      
+      if (details.status) {
+        html += `<p><strong>Status:</strong> ${details.status}</p>`;
+      }
+      
+      if (details.description) {
+        html += `<h4>Description</h4><p>${details.description}</p>`;
+      }
+      
+      // Show specs for physical nodes
+      if (details.cpu || details.ram || details.storage) {
+        html += `<h4>Specifications</h4>`;
+        if (details.cpu) html += `<p><strong>CPU:</strong> ${details.cpu}</p>`;
+        if (details.ram) html += `<p><strong>RAM:</strong> ${details.ram}</p>`;
+        if (details.storage) html += `<p><strong>Storage:</strong> ${details.storage}</p>`;
+      }
+      
+      // Show features for switch
+      if (details.features) {
+        html += `<h4>Features</h4><p>${details.features.join(', ')}</p>`;
+      }
+      
+      html += `
+        <a href="https://github.com/JashandeepJustinBains/VMStation" target="_blank" rel="noopener noreferrer" class="repo-link">
+          View VMStation Repo on GitHub →
+        </a>
+      `;
+      
+      infoPanel.innerHTML = html;
+    }
+    
+    // Create network visualization
+    function createNetwork(nodes, edges) {
+      if (network) {
+        network.destroy();
+      }
+      
+      const data = {
+        nodes: new DataSet(nodes),
+        edges: new DataSet(edges)
+      };
+      
+      network = new Network(container, data, networkOptions);
+      
+      // Event handlers
+      network.on('selectNode', (params) => {
+        if (params.nodes.length > 0) {
+          updateInfoPanel(params.nodes[0]);
+        }
+      });
+      
+      network.on('deselectNode', () => {
+        updateInfoPanel(null);
+      });
+      
+      // Fit after stabilization
+      network.once('stabilizationIterationsDone', () => {
+        network.setOptions({ physics: { enabled: false } });
+        network.fit({ animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
+        drawVPCOverlays();
+      });
+    }
+    
+    // Draw VPC overlays
+    function drawVPCOverlays() {
+      const wrapper = document.getElementById('network-topology-vpcs');
+      if (!wrapper) return;
+      
+      // Remove existing overlays
+      wrapper.querySelectorAll('.vpc-overlay, .cloud-tunnel').forEach(el => el.remove());
+      
+      if (currentMode === 'full-deployment') {
+        // Monitoring VPC overlay
+        const monitoringVPC = document.createElement('div');
+        monitoringVPC.className = 'vpc-overlay';
+        monitoringVPC.style.cssText = `
+          position: absolute;
+          top: 30px;
+          left: 30px;
+          width: 180px;
+          height: 200px;
+          border: 2px dashed #16a34a;
+          border-radius: 16px;
+          background: rgba(22, 163, 74, 0.05);
+          pointer-events: none;
+          z-index: 1;
+        `;
+        monitoringVPC.innerHTML = '<span style="position:absolute;top:-18px;left:8px;color:#16a34a;font-weight:600;font-size:11px;">MONITORING VPC</span>';
+        wrapper.appendChild(monitoringVPC);
+        
+        // Security VPC overlay
+        const securityVPC = document.createElement('div');
+        securityVPC.className = 'vpc-overlay';
+        securityVPC.style.cssText = `
+          position: absolute;
+          bottom: 30px;
+          left: 30px;
+          width: 180px;
+          height: 180px;
+          border: 2px dashed #dc2626;
+          border-radius: 16px;
+          background: rgba(220, 38, 38, 0.05);
+          pointer-events: none;
+          z-index: 1;
+        `;
+        securityVPC.innerHTML = '<span style="position:absolute;top:-18px;left:8px;color:#dc2626;font-weight:600;font-size:11px;">SECURITY VPC</span>';
+        wrapper.appendChild(securityVPC);
+        
+        // Storage VPC overlay
+        const storageVPC = document.createElement('div');
+        storageVPC.className = 'vpc-overlay';
+        storageVPC.style.cssText = `
+          position: absolute;
+          bottom: 30px;
+          right: 30px;
+          width: 160px;
+          height: 150px;
+          border: 2px dashed #64748b;
+          border-radius: 16px;
+          background: rgba(100, 116, 139, 0.05);
+          pointer-events: none;
+          z-index: 1;
+        `;
+        storageVPC.innerHTML = '<span style="position:absolute;top:-18px;left:8px;color:#64748b;font-weight:600;font-size:11px;">STORAGE VPC</span>';
+        wrapper.appendChild(storageVPC);
+      }
+      
+      // Cloud tunnel effect (always visible)
+      const tunnel = document.createElement('div');
+      tunnel.className = 'cloud-tunnel';
+      tunnel.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 30px;
+        width: 100px;
+        height: 60px;
+        border: 2px dotted #2563eb;
+        border-radius: 12px;
+        background: rgba(37, 99, 235, 0.08);
+        pointer-events: none;
+        z-index: 2;
+      `;
+      tunnel.innerHTML = '<span style="position:absolute;top:-16px;left:4px;color:#2563eb;font-weight:600;font-size:10px;">CLOUD TUNNEL</span>';
+      wrapper.appendChild(tunnel);
+    }
+    
+    // Switch mode handler
+    function switchMode(isFullDeployment) {
+      currentMode = isFullDeployment ? 'full-deployment' : 'low-load';
+      modeLabel.textContent = isFullDeployment ? 'Full-Deployment' : 'Low-load';
+      
+      const nodes = isFullDeployment ? fullDeploymentNodes : lowLoadNodes;
+      const edges = isFullDeployment ? fullDeploymentEdges : lowLoadEdges;
+      const legend = isFullDeployment ? fullDeploymentLegend : lowLoadLegend;
+      
+      renderLegend(legend);
+      createNetwork(nodes, edges);
+      updateInfoPanel(null);
+    }
+    
+    // Reset view handler
+    resetBtn?.addEventListener('click', () => {
+      if (network) {
+        network.fit({
+          animation: {
+            duration: 800,
+            easingFunction: 'easeInOutQuad'
+          }
+        });
       }
     });
-  });
-  
-
-  // VPC overlays: draw dashed containers for each group
-  function drawVPCOverlays() {
-    const container = document.getElementById('network-topology-vpcs');
-    if (!container) return;
-    // Remove old overlays
-    Array.from(container.querySelectorAll('.vpc-overlay')).forEach(e => e.remove());
-
-    // Example: hardcoded bounding boxes for demo. In production, calculate from node positions.
-    const vpcs = [
-      { group: 'monitoring', label: 'Monitoring VPC', color: '#16a34a', top: 60, left: 60, width: 350, height: 300, dash: '8,8' },
-      { group: 'workload', label: 'Storage VPC', color: '#64748b', top: 200, left: 500, width: 350, height: 300, dash: '8,8' },
-      // Add more as needed
-    ];
-    vpcs.forEach(vpc => {
-      const div = document.createElement('div');
-      div.className = 'vpc-overlay';
-      div.style.position = 'absolute';
-      div.style.top = vpc.top + 'px';
-      div.style.left = vpc.left + 'px';
-      div.style.width = vpc.width + 'px';
-      div.style.height = vpc.height + 'px';
-      div.style.border = `3px dashed ${vpc.color}`;
-      div.style.borderRadius = '32px';
-      div.style.background = 'rgba(255,255,255,0.03)';
-      div.style.pointerEvents = 'none';
-      div.style.zIndex = 1;
-      div.innerHTML = `<span style="position:absolute;top:-2.2em;left:0.5em;color:${vpc.color};font-weight:bold;">${vpc.label}</span>`;
-      container.appendChild(div);
+    
+    // Mode switch handler
+    modeSwitch?.addEventListener('change', (e) => {
+      switchMode(e.target.checked);
     });
-
-    // Cloud tunnel effect (Azure Web Apps to compute node)
-    const tunnel = document.createElement('div');
-    tunnel.className = 'cloud-tunnel';
-    tunnel.style.position = 'absolute';
-    tunnel.style.top = '120px';
-    tunnel.style.left = '410px';
-    tunnel.style.width = '120px';
-    tunnel.style.height = '30px';
-    tunnel.style.border = '2px dotted #2563eb';
-    tunnel.style.borderRadius = '20px';
-    tunnel.style.background = 'rgba(37,99,235,0.08)';
-    tunnel.style.zIndex = 2;
-    tunnel.style.pointerEvents = 'none';
-    tunnel.innerHTML = `<span style="position:absolute;top:-1.8em;left:0.5em;color:#2563eb;font-weight:bold;">Cloudflared Tunnel</span>`;
-    container.appendChild(tunnel);
-  }
-
-  // Redraw overlays after vis-network renders
-  setTimeout(drawVPCOverlays, 800);
-  window.addEventListener('resize', drawVPCOverlays);
-  
-  // Fit the network after stabilization
-  network.once('stabilizationIterationsDone', function() {
-    network.setOptions({ physics: false });
-    network.fit();
-  });
+    
+    // Redraw overlays on resize
+    window.addEventListener('resize', () => {
+      if (network) {
+        drawVPCOverlays();
+      }
+    });
+    
+    // Initial render
+    switchMode(false);
   }
   
-  // Initialize when vis-network is loaded
-  if (window.VisNetwork) {
-    initializeTopology();
+  // Wait for DOM and initialize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTopology);
   } else {
-    window.addEventListener('visNetworkLoaded', initializeTopology);
+    initTopology();
   }
 </script>
