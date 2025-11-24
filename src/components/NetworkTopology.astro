@@ -1,5 +1,146 @@
 ---
+// Interactive GNS3-style network topology diagram showing Kubernetes pods
+import portfolioData from '../../portfolio-data.json';
 
+const { nodes: physicalNodes } = portfolioData.network_topology;
+
+// Transform physical nodes and their services into a pod-centric topology
+const pods = [];
+const connections = [];
+let nodeId = 1;
+
+// Extract all pods/services from physical nodes
+physicalNodes.forEach(physNode => {
+  if (physNode.services) {
+    physNode.services.forEach(service => {
+      // Skip generic services, focus on actual pods
+      if (service.name !== 'General Compute Workloads' && service.name !== 'Storage Workloads') {
+        pods.push({
+          id: nodeId++,
+          label: service.name,
+          group: getServiceGroup(service.name),
+          physicalNode: physNode.label,
+          physicalNodeColor: physNode.color,
+          port: service.port,
+          url: service.url,
+          description: service.description,
+          hostIP: physNode.ip
+        });
+      }
+    });
+  }
+});
+
+// Create connections based on Kubernetes architecture
+// Prometheus scrapes Node Exporters
+const prometheus = pods.find(p => p.label === 'Prometheus');
+const nodeExporters = pods.filter(p => p.label === 'Node Exporter');
+if (prometheus && nodeExporters.length > 0) {
+  nodeExporters.forEach(exporter => {
+    connections.push({
+      from: prometheus.id,
+      to: exporter.id,
+      label: 'scrape',
+      color: '#16a34a',
+      dashes: true
+    });
+  });
+}
+
+// Promtails send logs to Loki
+const loki = pods.find(p => p.label === 'Loki');
+const promtails = pods.filter(p => p.label === 'Promtail');
+if (loki && promtails.length > 0) {
+  promtails.forEach(promtail => {
+    connections.push({
+      from: promtail.id,
+      to: loki.id,
+      label: 'logs',
+      color: '#ea580c',
+      dashes: true
+    });
+  });
+}
+
+// Grafana queries Prometheus and Loki
+const grafana = pods.find(p => p.label === 'Grafana');
+if (grafana && prometheus) {
+  connections.push({
+    from: grafana.id,
+    to: prometheus.id,
+    label: 'query',
+    color: '#f59e0b',
+    dashes: [5, 5]
+  });
+}
+if (grafana && loki) {
+  connections.push({
+    from: grafana.id,
+    to: loki.id,
+    label: 'query',
+    color: '#f59e0b',
+    dashes: [5, 5]
+  });
+}
+
+// All pods connect to API Server
+const apiServer = pods.find(p => p.label === 'Kubernetes API Server');
+if (apiServer) {
+  pods.forEach(pod => {
+    if (pod.label !== 'Kubernetes API Server' && pod.label !== 'etcd') {
+      connections.push({
+        from: pod.id,
+        to: apiServer.id,
+        label: '',
+        color: '#64748b',
+        width: 1
+      });
+    }
+  });
+}
+
+// API Server connects to etcd
+const etcd = pods.find(p => p.label === 'etcd');
+if (apiServer && etcd) {
+  connections.push({
+    from: apiServer.id,
+    to: etcd.id,
+    label: 'state',
+    color: '#2563eb',
+    width: 3
+  });
+}
+
+// CoreDNS provides DNS for all pods
+const coreDNS = pods.find(p => p.label === 'CoreDNS');
+if (coreDNS) {
+  pods.forEach(pod => {
+    if (pod.label !== 'CoreDNS' && pod.label !== 'Kubernetes API Server' && pod.label !== 'etcd') {
+      connections.push({
+        from: pod.id,
+        to: coreDNS.id,
+        label: '',
+        color: '#8b5cf6',
+        width: 1,
+        dashes: [2, 4]
+      });
+    }
+  });
+}
+
+function getServiceGroup(serviceName) {
+  const controlPlane = ['Kubernetes API Server', 'etcd', 'CoreDNS'];
+  const monitoring = ['Prometheus', 'Grafana', 'Loki'];
+  const agents = ['Node Exporter', 'Promtail'];
+  const applications = ['Jellyfin'];
+  
+  if (controlPlane.includes(serviceName)) return 'control-plane';
+  if (monitoring.includes(serviceName)) return 'monitoring';
+  if (agents.includes(serviceName)) return 'agent';
+  if (applications.includes(serviceName)) return 'application';
+  return 'workload';
+}
+---
 
 <section id="homelab">
   <h2>Homelab Network Topology</h2>
@@ -7,9 +148,188 @@
     <div class="topology-header">
       <p>Interactive Kubernetes pod topology showing services and their connections across the 3-node VMStation cluster</p>
       <div class="topology-controls">
-        <label class="switch">
-          <input type="checkbox" id="modeSwitch" />
-          <span class="slider"></span>
+        <button id="resetView" class="btn-small">Reset View</button>
+        <button id="togglePhysics" class="btn-small">Toggle Physics</button>
+      </div>
+    </div>
+    <div id="network-topology" class="network-diagram"></div>
+    <div id="node-info" class="node-info-panel">
+      <h3>Select a node to view details</h3>
+      <p>Click on any server or device in the topology to see specifications and role information.</p>
+    </div>
+    <div class="topology-legend">
+      <h4>Pod Types:</h4>
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="legend-color" style="background: #2563eb;"></span>
+          <span>Control Plane (API Server, etcd, CoreDNS)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #16a34a;"></span>
+          <span>Monitoring (Prometheus, Grafana, Loki)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #8b5cf6;"></span>
+          <span>Agents (Node Exporter, Promtail)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #ea580c;"></span>
+          <span>Applications (Jellyfin, etc.)</span>
+        </div>
+      </div>
+      <div style="margin-top: 1rem;">
+        <h4>Physical Nodes:</h4>
+        <div class="legend-items">
+          <div class="legend-item">
+            <div style="width: 20px; height: 20px; background: #2563eb; opacity: 0.2; border-radius: 3px;"></div>
+            <span>masternode (192.168.4.63) - Always On</span>
+          </div>
+          <div class="legend-item">
+            <div style="width: 20px; height: 20px; background: #16a34a; opacity: 0.2; border-radius: 3px;"></div>
+            <span>storagenodet3500 (192.168.4.61) - Auto-Sleep</span>
+          </div>
+          <div class="legend-item">
+            <div style="width: 20px; height: 20px; background: #ea580c; opacity: 0.2; border-radius: 3px;"></div>
+            <span>homelab (192.168.4.62) - Auto-Sleep</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .topology-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+  
+  .topology-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+  
+  .topology-header p {
+    color: var(--text-muted);
+    margin: 0;
+  }
+  
+  .topology-controls {
+    display: flex;
+    gap: var(--space-2);
+  }
+  
+  .btn-small {
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-base);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: var(--transition-all);
+  }
+  
+  .btn-small:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+  }
+  
+  .network-diagram {
+    width: 100%;
+    height: 600px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-base);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-4);
+  }
+  
+  .node-info-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-md);
+    padding: var(--space-8);
+    min-height: 150px;
+    margin-bottom: var(--space-4);
+  }
+  
+  .node-info-panel h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+  }
+  
+  .node-info-panel p {
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+  
+  .node-info-panel .specs {
+    margin-top: var(--space-6);
+  }
+  
+  .node-info-panel .specs strong {
+    color: var(--color-primary);
+  }
+  
+  .node-info-panel .repo-link {
+    margin-top: var(--space-4);
+    display: inline-block;
+  }
+  
+  .topology-legend {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+  }
+  
+  .topology-legend h4 {
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+  }
+  
+  .legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-base);
+  }
+  
+  @media (max-width: 768px) {
+    .network-diagram {
+      height: 400px;
+    }
+    
+    .topology-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .topology-controls {
+      width: 100%;
       justify-content: flex-start;
     }
     
@@ -52,6 +372,158 @@
     hostIP: pod.hostIP
   }));
   
+  // Transform connections to vis-network format
+  const edges = connections.map(conn => {
+    const edgeConfig = {
+      from: conn.from,
+      to: conn.to,
+      label: conn.label || '',
+      color: { color: conn.color || '#94a3b8' },
+      width: conn.width || 2
+    };
+    
+    if (conn.dashes) {
+      edgeConfig.dashes = Array.isArray(conn.dashes) ? conn.dashes : true;
+    }
+    
+    return edgeConfig;
+  });
+  
+  // Create nodes for vis-network
+  const visNodes = nodes.map(node => ({
+    id: node.id,
+    label: node.label,
+    title: node.title,
+    group: node.group,
+    font: { color: '#ffffff', size: 14 },
+    specs: node.specs
+  }));
+  
+  // Network configuration
+  const container = document.getElementById('network-topology');
+  const data = {
+    nodes: visNodes,
+    edges: edges
+  };
+  
+  const options = {
+    nodes: {
+      shape: 'box',
+      margin: 10,
+      widthConstraint: {
+        minimum: 100,
+        maximum: 150
+      },
+      font: {
+        color: '#1e293b',
+        size: 14,
+        face: 'Inter, system-ui, sans-serif'
+      },
+      borderWidth: 2,
+      borderWidthSelected: 3,
+      shadow: {
+        enabled: true,
+        color: 'rgba(0, 0, 0, 0.1)',
+        size: 10,
+        x: 0,
+        y: 2
+      }
+    },
+    edges: {
+      width: 2,
+      color: {
+        color: '#94a3b8',
+        highlight: '#2563eb',
+        hover: '#3b82f6'
+      },
+      smooth: {
+        type: 'continuous',
+        roundness: 0.5
+      },
+      font: {
+        color: '#64748b',
+        size: 11,
+        strokeWidth: 0
+      }
+    },
+    groups: {
+      'control-plane': {
+        color: {
+          background: '#2563eb',
+          border: '#1e40af',
+          highlight: { background: '#3b82f6', border: '#2563eb' }
+        },
+        shape: 'box',
+        borderWidth: 3,
+        font: { color: '#ffffff' }
+      },
+      'monitoring': {
+        color: {
+          background: '#16a34a',
+          border: '#15803d',
+          highlight: { background: '#22c55e', border: '#16a34a' }
+        },
+        shape: 'box',
+        borderWidth: 2,
+        font: { color: '#ffffff' }
+      },
+      'agent': {
+        color: {
+          background: '#8b5cf6',
+          border: '#7c3aed',
+          highlight: { background: '#a78bfa', border: '#8b5cf6' }
+        },
+        shape: 'ellipse',
+        borderWidth: 2,
+        font: { color: '#ffffff' }
+      },
+      'application': {
+        color: {
+          background: '#ea580c',
+          border: '#c2410c',
+          highlight: { background: '#f97316', border: '#ea580c' }
+        },
+        shape: 'box',
+        borderWidth: 2,
+        font: { color: '#ffffff' }
+      },
+      'workload': {
+        color: {
+          background: '#64748b',
+          border: '#475569',
+          highlight: { background: '#94a3b8', border: '#64748b' }
+        },
+        shape: 'box',
+        borderWidth: 2,
+        font: { color: '#ffffff' }
+      }
+    },
+    physics: {
+      enabled: true,
+      barnesHut: {
+        gravitationalConstant: -3000,
+        centralGravity: 0.3,
+        springLength: 150,
+        springConstant: 0.04,
+        damping: 0.09,
+        avoidOverlap: 0.5
+      },
+      stabilization: {
+        enabled: true,
+        iterations: 200,
+        updateInterval: 25
+      }
+    },
+    interaction: {
+      hover: true,
+      tooltipDelay: 100,
+      navigationButtons: true,
+      keyboard: {
+        enabled: true
+      },
+      zoomView: true,
+      dragView: true
+    }
   };
   
   const network = new Network(container, data, options);
@@ -132,57 +604,11 @@
     });
   });
   
-
-  // VPC overlays: draw dashed containers for each group
-  function drawVPCOverlays() {
-    const container = document.getElementById('network-topology-vpcs');
-    if (!container) return;
-    // Remove old overlays
-    Array.from(container.querySelectorAll('.vpc-overlay')).forEach(e => e.remove());
-
-    // Example: hardcoded bounding boxes for demo. In production, calculate from node positions.
-    const vpcs = [
-      { group: 'monitoring', label: 'Monitoring VPC', color: '#16a34a', top: 60, left: 60, width: 350, height: 300, dash: '8,8' },
-      { group: 'workload', label: 'Storage VPC', color: '#64748b', top: 200, left: 500, width: 350, height: 300, dash: '8,8' },
-      // Add more as needed
-    ];
-    vpcs.forEach(vpc => {
-      const div = document.createElement('div');
-      div.className = 'vpc-overlay';
-      div.style.position = 'absolute';
-      div.style.top = vpc.top + 'px';
-      div.style.left = vpc.left + 'px';
-      div.style.width = vpc.width + 'px';
-      div.style.height = vpc.height + 'px';
-      div.style.border = `3px dashed ${vpc.color}`;
-      div.style.borderRadius = '32px';
-      div.style.background = 'rgba(255,255,255,0.03)';
-      div.style.pointerEvents = 'none';
-      div.style.zIndex = 1;
-      div.innerHTML = `<span style="position:absolute;top:-2.2em;left:0.5em;color:${vpc.color};font-weight:bold;">${vpc.label}</span>`;
-      container.appendChild(div);
-    });
-
-    // Cloud tunnel effect (Azure Web Apps to compute node)
-    const tunnel = document.createElement('div');
-    tunnel.className = 'cloud-tunnel';
-    tunnel.style.position = 'absolute';
-    tunnel.style.top = '120px';
-    tunnel.style.left = '410px';
-    tunnel.style.width = '120px';
-    tunnel.style.height = '30px';
-    tunnel.style.border = '2px dotted #2563eb';
-    tunnel.style.borderRadius = '20px';
-    tunnel.style.background = 'rgba(37,99,235,0.08)';
-    tunnel.style.zIndex = 2;
-    tunnel.style.pointerEvents = 'none';
-    tunnel.innerHTML = `<span style="position:absolute;top:-1.8em;left:0.5em;color:#2563eb;font-weight:bold;">Cloudflared Tunnel</span>`;
-    container.appendChild(tunnel);
-  }
-
-  // Redraw overlays after vis-network renders
-  setTimeout(drawVPCOverlays, 800);
-  window.addEventListener('resize', drawVPCOverlays);
+  let physicsEnabled = true;
+  document.getElementById('togglePhysics')?.addEventListener('click', () => {
+    physicsEnabled = !physicsEnabled;
+    network.setOptions({ physics: { enabled: physicsEnabled } });
+  });
   
   // Fit the network after stabilization
   network.once('stabilizationIterationsDone', function() {
