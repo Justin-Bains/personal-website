@@ -273,19 +273,31 @@ h2 {
 /* Cards */
 .card {
   background: var(--bg-secondary);
-  border: 1px solid var(--border-base);
-  border-radius: var(--radius-md);
+  border: 2px solid var(--border-base);
+  border-radius: var(--radius-base);
   padding: var(--space-8);
   margin-bottom: var(--space-6);
   transition: var(--transition-all);
   box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0.3;
 }
 
 .card:hover {
   background: var(--bg-hover);
   border-color: var(--color-primary);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(14, 165, 233, 0.2);
 }
 
 .card h3 {
