@@ -421,10 +421,11 @@ h2 {
 .hero {
   text-align: center;
   padding: var(--space-16) var(--space-8);
-  background: linear-gradient(135deg, #1f2937 0%, #0f172a 100%);
-  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(35, 42, 75, 0.3) 0%, rgba(15, 50, 90, 0.25) 100%);
+  border-radius: 2px;
   margin-bottom: var(--space-16);
-  border: 1px solid var(--border-base);
+  border: 1px solid rgba(15, 175, 248, 0.15);
+  backdrop-filter: blur(10px);
 }
 
 .hero h1 {
