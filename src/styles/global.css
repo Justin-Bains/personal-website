@@ -7,21 +7,23 @@
    CSS CUSTOM PROPERTIES (Design Tokens)
    ============================================ */
 
-:root {
-  /* Color Palette - Primary (Network Blue) */
-  --color-primary: #0ea5e9;
-  --color-primary-dark: #0284c7;
-  --color-primary-light: #38bdf8;
-  --color-primary-lighter: #7dd3fc;
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-  /* Color Palette - Secondary (Cyan/Sky) */
-  --color-secondary: #22d3ee;
-  --color-secondary-dark: #0ea5e9;
-  --color-secondary-light: #67e8f9;
+:root {
+  /* Color Palette - Infrastructure Green & Blue */
+  --color-primary: #4ade80;
+  --color-primary-dark: #22c55e;
+  --color-primary-light: #86efac;
+  --color-primary-lighter: #bbf7d0;
+
+  /* Color Palette - Secondary (Deep Blue) */
+  --color-secondary: #5478dd;
+  --color-secondary-dark: #3b5bdb;
+  --color-secondary-light: #7c93f2;
 
   /* Color Palette - Accent */
-  --color-accent: #06b6d4;
-  --color-success: #10b981;
+  --color-accent: #ea580c;
+  --color-success: #4ade80;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
 
