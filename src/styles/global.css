@@ -331,33 +331,36 @@ h2 {
   display: inline-block;
   padding: var(--space-3) var(--space-8);
   background: var(--color-primary);
-  color: white;
-  border-radius: var(--radius-base);
+  color: #0a0e27;
+  border-radius: 4px;
   font-weight: var(--font-semibold);
   font-size: var(--text-base);
   text-align: center;
   transition: var(--transition-base);
   border: 2px solid var(--color-primary);
   cursor: pointer;
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
 }
 
 .btn:hover {
-  background: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-light);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-  color: white;
+  box-shadow: 0 8px 16px rgba(14, 165, 233, 0.3);
+  color: #0a0e27;
 }
 
 .btn-secondary {
-  background: var(--bg-secondary);
+  background: transparent;
   border: 2px solid var(--color-primary);
   color: var(--color-primary);
 }
 
 .btn-secondary:hover {
-  background: var(--color-primary);
-  color: white;
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
 }
 
 .btn-small {
