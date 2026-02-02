@@ -2,23 +2,15 @@
 // OpenFlow & MiniNet Network Simulation Project Card
 import OpenFlowMiniNetSVG from './OpenFlowMiniNetSVG.astro';
 ---
-<div class="project-card" style="flex:1 1 100%;max-width:700px;">
+<div class="project-card project-card-full">
   <h3>OpenFlow & MiniNet Network Simulation</h3>
   <p>A simulated SDN network using MiniNet and OpenFlow, with custom Python and shell scripts to define topology and flows. Visualized below.</p>
   <a href="https://github.com/JashandeepJustinBains/NetworkingAndOpenFlowSimulation/tree/main/Mininet%20and%20OpenFlow" target="_blank" rel="noopener" class="btn btn-secondary">View Project →</a>
   <OpenFlowMiniNetSVG />
 </div>
 <style>
-.project-card {
-  background: var(--bg-tertiary);
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 1.5rem 2rem;
-  min-width: 260px;
+.project-card-full {
+  flex: 1 1 100%;
   max-width: 700px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
 }
 </style>
