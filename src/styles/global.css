@@ -40,10 +40,10 @@
   --text-light: #71717a;
 
   /* Border Colors - Dark Mode (Technical) */
-  --border-light: #1e3a4f;
-  --border-base: #2d4a61;
-  --border-medium: #3d5a71;
-  --border-dark: #4d6a81;
+  --border-light: #1a3a2a;
+  --border-base: #253d33;
+  --border-medium: #2f4a3e;
+  --border-dark: #3a5749;
   
   /* Shadow Colors - Dark Mode */
   --shadow-sm: rgba(0, 0, 0, 0.3);
