@@ -292,14 +292,15 @@ h2 {
 
 /* Cards */
 .card {
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-base);
-  border-radius: var(--radius-base);
+  background: linear-gradient(135deg, rgba(35, 42, 75, 0.4) 0%, rgba(23, 37, 64, 0.3) 100%);
+  border: 1px solid rgba(15, 175, 248, 0.2);
+  border-radius: 2px;
   padding: var(--space-8);
   margin-bottom: var(--space-6);
   transition: var(--transition-all);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(15, 175, 248, 0.1);
   position: relative;
+  backdrop-filter: blur(10px);
 }
 
 .card::before {
@@ -309,15 +310,16 @@ h2 {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  opacity: 0.4;
+  background: linear-gradient(90deg, transparent, rgba(15, 175, 248, 0.5), transparent);
+  opacity: 0.5;
+  border-radius: 2px;
 }
 
 .card:hover {
-  background: var(--bg-hover);
-  border-color: var(--color-primary);
+  background: linear-gradient(135deg, rgba(35, 42, 75, 0.6) 0%, rgba(23, 37, 64, 0.5) 100%);
+  border-color: rgba(15, 175, 248, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(74, 222, 128, 0.15);
+  box-shadow: 0 8px 24px rgba(15, 175, 248, 0.2), inset 0 1px 0 rgba(15, 175, 248, 0.15);
 }
 
 .card h3 {
