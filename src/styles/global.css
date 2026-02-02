@@ -466,7 +466,8 @@ footer::before {
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  opacity: 0.4;
+  opacity: 0.5;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
 }
 
 footer p {
