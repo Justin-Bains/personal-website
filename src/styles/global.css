@@ -8,11 +8,11 @@
    ============================================ */
 
 :root {
-  /* Color Palette - Primary Blues */
-  --color-primary: #60a5fa;
-  --color-primary-dark: #2563eb;
-  --color-primary-light: #93c5fd;
-  --color-primary-lighter: #bfdbfe;
+  /* Color Palette - Primary (Network Blue) */
+  --color-primary: #0ea5e9;
+  --color-primary-dark: #0284c7;
+  --color-primary-light: #38bdf8;
+  --color-primary-lighter: #7dd3fc;
 
   /* Color Palette - Secondary (Cyan/Sky) */
   --color-secondary: #22d3ee;
