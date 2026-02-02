@@ -58,10 +58,38 @@ const certifications = [
 <style>
   .cert-card {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid var(--border-base);
+    position: relative;
+    overflow: hidden;
   }
-  
+
+  .cert-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+    opacity: 0.5;
+  }
+
+  .cert-card h3 {
+    color: var(--text-primary);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+  }
+
+  .cert-card p {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
   .cert-card a {
-    margin-top: 1rem;
+    margin-top: var(--space-4);
     display: inline-block;
   }
 </style>
