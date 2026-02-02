@@ -227,27 +227,26 @@ a:hover {
 
 /* Header */
 header {
-  background: var(--bg-secondary);
-  border-bottom: 2px solid var(--border-base);
+  background: linear-gradient(180deg, rgba(35, 42, 75, 0.3) 0%, rgba(23, 37, 64, 0.2) 100%);
+  border-bottom: 1px solid rgba(15, 175, 248, 0.15);
   padding: var(--space-8) 0;
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   position: relative;
 }
 
 header::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -1px;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  opacity: 0.5;
-  box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+  background: linear-gradient(90deg, transparent, rgba(15, 175, 248, 0.4), transparent);
+  opacity: 0.6;
 }
 
 header h1 {
