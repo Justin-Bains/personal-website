@@ -402,13 +402,13 @@ h2 {
 }
 
 .tech-badge {
-  background: rgba(74, 222, 128, 0.08);
-  border: 1px solid rgba(74, 222, 128, 0.3);
-  color: #86efac;
+  background: rgba(15, 175, 248, 0.08);
+  border: 1px solid rgba(15, 175, 248, 0.25);
+  color: #39d8ff;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 500;
-  text-shadow: 0 0 4px rgba(74, 222, 128, 0.3);
+  text-shadow: 0 0 4px rgba(15, 175, 248, 0.2);
 }
 
 /* Grid Layout */
