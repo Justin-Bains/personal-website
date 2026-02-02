@@ -462,13 +462,12 @@ footer {
 footer::before {
   content: '';
   position: absolute;
-  top: -2px;
+  top: -1px;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  opacity: 0.5;
-  box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+  background: linear-gradient(90deg, transparent, rgba(15, 175, 248, 0.4), transparent);
+  opacity: 0.6;
 }
 
 footer p {
