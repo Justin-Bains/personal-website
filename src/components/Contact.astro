@@ -2,12 +2,12 @@
 ---
 <section id="contact">
   <h2>Get In Touch</h2>
-  <div class="card">
-    <p style="margin-bottom: 1.5rem;">
-      I'm always interested in hearing about new opportunities, collaborations, or just connecting 
-      with fellow professionals in the networking and cloud space.
+  <div class="card contact-card">
+    <p class="contact-intro">
+      I'm interested in hearing about new opportunities, collaborations, and connecting
+      with fellow professionals in the networking and infrastructure space.
     </p>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div class="contact-links">
       <a href="https://linkedin.com/in/jashandeepjustinbains" target="_blank" rel="noopener noreferrer" class="btn">
         LinkedIn Profile →
       </a>
@@ -20,3 +20,24 @@
     </div>
   </div>
 </section>
+
+<style>
+  .contact-card {
+    text-align: center;
+  }
+
+  .contact-intro {
+    margin-bottom: var(--space-8);
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>
