@@ -1,6 +1,6 @@
 ---
-// Enhanced dynamic network topology background with router icons and LED status indicators
-// Simulates a complex multi-hop routing network similar to GNS3/Packet Tracer diagrams
+// Subtle network topology background - minimal and refined
+// Acts as a background flavor element without overwhelming content
 ---
 
 <div class="network-background-container">
@@ -8,8 +8,6 @@
 </div>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
-
   .network-background-container {
     position: fixed;
     top: 0;
@@ -17,7 +15,7 @@
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+    background: linear-gradient(135deg, #0a0e27 0%, #0f1629 50%, #0d1b2a 100%);
     overflow: hidden;
   }
 
@@ -29,36 +27,29 @@
 </style>
 
 <script>
-  type RouterState = 'healthy' | 'warning' | 'down' | 'recovering';
-
   interface NetworkNode {
     x: number;
     y: number;
     radius: number;
-    label: string;
-    state: RouterState;
-    stateTimer: number;
-    stateChangeInterval: number;
-    connections: number[];
-    lastStateChange: number;
+    pulse: number;
   }
 
-  interface PingPacket {
-    startNode: number;
-    endNode: number;
-    progress: number;
-    speed: number;
-    active: boolean;
+  interface Packet {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    life: number;
+    maxLife: number;
   }
 
-  class NetworkTopologySimulator {
+  class SubtleNetworkBackground {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D | null;
     nodes: NetworkNode[] = [];
-    packets: PingPacket[] = [];
+    packets: Packet[] = [];
     animationId: number | null = null;
-    mousePos = { x: 0, y: 0 };
-    packetSpawnTimer = 0;
+    time = 0;
 
     constructor(canvasId: string) {
       const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -67,13 +58,10 @@
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.resizeCanvas();
-      this.initializeNetwork();
+      this.initializeNodes();
       this.startAnimation();
       
       window.addEventListener('resize', () => this.resizeCanvas());
-      document.addEventListener('mousemove', (e) => {
-        this.mousePos = { x: e.clientX, y: e.clientY };
-      });
     }
 
     resizeCanvas() {
@@ -81,416 +69,125 @@
       this.canvas.height = window.innerHeight;
     }
 
-    initializeNetwork() {
+    initializeNodes() {
+      // Create a minimal set of subtle nodes distributed across the canvas
       const w = this.canvas.width;
       const h = this.canvas.height;
-      const nodeRadius = 12;
 
-      // Create a complex, distributed network topology across the entire viewport
       this.nodes = [
-        // Core routers (center cluster)
-        {
-          x: w * 0.25,
-          y: h * 0.35,
-          radius: nodeRadius + 2,
-          label: 'CORE-01',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 8000 + Math.random() * 4000,
-          connections: [4, 5, 6, 7],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.75,
-          y: h * 0.35,
-          radius: nodeRadius + 2,
-          label: 'CORE-02',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 9000 + Math.random() * 4000,
-          connections: [4, 5, 6, 7],
-          lastStateChange: Date.now()
-        },
-        // Edge routers (perimeter)
-        {
-          x: w * 0.05,
-          y: h * 0.15,
-          radius: nodeRadius,
-          label: 'EDGE-01',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 7000 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.95,
-          y: h * 0.15,
-          radius: nodeRadius,
-          label: 'EDGE-02',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 8500 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.05,
-          y: h * 0.85,
-          radius: nodeRadius,
-          label: 'EDGE-03',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 7500 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.95,
-          y: h * 0.85,
-          radius: nodeRadius,
-          label: 'EDGE-04',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 9200 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        // Access layer routers
-        {
-          x: w * 0.15,
-          y: h * 0.5,
-          radius: nodeRadius - 1,
-          label: 'RTR-01',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 6500 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.85,
-          y: h * 0.5,
-          radius: nodeRadius - 1,
-          label: 'RTR-02',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 7800 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.5,
-          y: h * 0.15,
-          radius: nodeRadius - 1,
-          label: 'RTR-03',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 8200 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.5,
-          y: h * 0.85,
-          radius: nodeRadius - 1,
-          label: 'RTR-04',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 7300 + Math.random() * 3000,
-          connections: [0, 1],
-          lastStateChange: Date.now()
-        },
-        // End hosts (corners and edges)
-        {
-          x: w * 0.08,
-          y: h * 0.25,
-          radius: nodeRadius - 2,
-          label: 'HOST-01',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 12000 + Math.random() * 4000,
-          connections: [2],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.92,
-          y: h * 0.25,
-          radius: nodeRadius - 2,
-          label: 'HOST-02',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 11000 + Math.random() * 4000,
-          connections: [3],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.08,
-          y: h * 0.75,
-          radius: nodeRadius - 2,
-          label: 'HOST-03',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 10500 + Math.random() * 4000,
-          connections: [4],
-          lastStateChange: Date.now()
-        },
-        {
-          x: w * 0.92,
-          y: h * 0.75,
-          radius: nodeRadius - 2,
-          label: 'HOST-04',
-          state: 'healthy',
-          stateTimer: 0,
-          stateChangeInterval: 11500 + Math.random() * 4000,
-          connections: [5],
-          lastStateChange: Date.now()
-        }
+        { x: w * 0.2, y: h * 0.3, radius: 2, pulse: 0 },
+        { x: w * 0.8, y: h * 0.3, radius: 2, pulse: 0.3 },
+        { x: w * 0.5, y: h * 0.5, radius: 3, pulse: 0.15 },
+        { x: w * 0.1, y: h * 0.7, radius: 2, pulse: 0.45 },
+        { x: w * 0.9, y: h * 0.7, radius: 2, pulse: 0.6 },
+        { x: w * 0.35, y: h * 0.15, radius: 1.5, pulse: 0.2 },
+        { x: w * 0.65, y: h * 0.85, radius: 1.5, pulse: 0.5 }
       ];
     }
 
-    getStateColor(state: RouterState): string {
-      switch (state) {
-        case 'healthy': return '#4ade80'; // Vibrant green
-        case 'warning': return '#ea580c'; // Orange
-        case 'down': return '#ef4444'; // Red
-        case 'recovering': return '#f59e0b'; // Amber
-        default: return '#4ade80';
-      }
-    }
-
-    updateRouterStates() {
-      const now = Date.now();
-      this.nodes.forEach(node => {
-        const timeSinceChange = now - node.lastStateChange;
-
-        if (timeSinceChange > node.stateChangeInterval) {
-          const random = Math.random();
-          if (random < 0.15) {
-            // Go down
-            node.state = 'down';
-            node.lastStateChange = now;
-            node.stateChangeInterval = 3000 + Math.random() * 2000;
-          } else if (node.state === 'down') {
-            // Enter warning/recovering
-            node.state = 'recovering';
-            node.lastStateChange = now;
-            node.stateChangeInterval = 2000;
-          } else if (node.state === 'recovering') {
-            // Warning state
-            node.state = 'warning';
-            node.lastStateChange = now;
-            node.stateChangeInterval = 1500;
-          } else if (node.state === 'warning') {
-            // Back to healthy
-            node.state = 'healthy';
-            node.lastStateChange = now;
-            node.stateChangeInterval = 8000 + Math.random() * 4000;
-          }
-        }
-      });
-    }
-
-    drawRouterIcon(node: NetworkNode) {
-      if (!this.ctx) return;
-
-      const ctx = this.ctx;
-      const s = node.radius;
-      const color = this.getStateColor(node.state);
-
-      // Router box/rack
-      ctx.shadowColor = color;
-      ctx.shadowBlur = node.state === 'healthy' ? 12 : 8;
-      
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.rect(node.x - s, node.y - s * 1.2, s * 2, s * 2.4);
-      ctx.stroke();
-
-      // LED indicators
-      const ledCount = 4;
-      const ledSpacing = (s * 2) / (ledCount + 1);
-      for (let i = 0; i < ledCount; i++) {
-        const ledX = node.x - s + ledSpacing * (i + 1);
-        const ledY = node.y - s * 0.8;
-
-        // LED background
-        ctx.fillStyle = 'rgba(20, 20, 30, 0.8)';
-        ctx.fillRect(ledX - 2, ledY - 2, 4, 4);
-
-        // LED glow based on state
-        let ledColor = color;
-        let glowIntensity = 0.6;
-
-        if (node.state === 'down') {
-          ledColor = '#ef4444';
-          glowIntensity = 0.8;
-        } else if (node.state === 'recovering') {
-          ledColor = '#f59e0b';
-          glowIntensity = 0.7;
-        } else if (node.state === 'warning') {
-          ledColor = '#ea580c';
-          glowIntensity = 0.7;
-        }
-
-        ctx.shadowColor = ledColor;
-        ctx.shadowBlur = 8 * glowIntensity;
-        ctx.fillStyle = ledColor;
-        ctx.fillRect(ledX - 2, ledY - 2, 4, 4);
-      }
-
-      // Label
-      ctx.shadowColor = 'transparent';
-      ctx.fillStyle = 'rgba(209, 213, 219, 0.7)';
-      ctx.font = `10px 'Courier New', monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillText(node.label, node.x, node.y + s * 1.6);
-
-      ctx.shadowColor = 'transparent';
-    }
-
-    drawLink(from: NetworkNode, to: NetworkNode) {
-      if (!this.ctx) return;
-
-      const ctx = this.ctx;
-      
-      // Determine link color based on either node's health
-      const linkColor = (from.state === 'healthy' && to.state === 'healthy') 
-        ? 'rgba(74, 222, 128, 0.15)' 
-        : 'rgba(239, 68, 68, 0.1)';
-
-      ctx.strokeStyle = linkColor;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(to.x, to.y);
-      ctx.stroke();
-      ctx.setLineDash([]);
-    }
-
-    drawPacket(packet: PingPacket) {
-      if (!this.ctx || !packet.active) return;
-
-      const startNode = this.nodes[packet.startNode];
-      const endNode = this.nodes[packet.endNode];
-
-      if (!startNode || !endNode) return;
-
-      const x = startNode.x + (endNode.x - startNode.x) * packet.progress;
-      const y = startNode.y + (endNode.y - startNode.y) * packet.progress;
-
-      const ctx = this.ctx;
-      
-      // Packet trail with radial blur effect
-      const gradient = ctx.createRadialGradient(x, y, 0, x, y, 6);
-      gradient.addColorStop(0, 'rgba(74, 222, 128, 0.8)');
-      gradient.addColorStop(1, 'rgba(74, 222, 128, 0)');
-      
-      ctx.shadowColor = '#4ade80';
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(x, y, 6, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Packet core
-      ctx.fillStyle = '#4ade80';
-      ctx.beginPath();
-      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Arc shrinking from end to start
-      const arcProgress = 1 - packet.progress;
-      ctx.strokeStyle = `rgba(74, 222, 128, ${0.5 * arcProgress})`;
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([2, 2]);
-      ctx.beginPath();
-      const angle = Math.atan2(endNode.y - startNode.y, endNode.x - startNode.x);
-      const arcRadius = 8;
-      ctx.arc(
-        endNode.x - Math.cos(angle) * arcRadius,
-        endNode.y - Math.sin(angle) * arcRadius,
-        arcRadius,
-        angle - Math.PI * 0.3,
-        angle + Math.PI * 0.3
-      );
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      ctx.shadowColor = 'transparent';
-    }
-
     spawnPacket() {
-      // Randomly select start and end nodes
-      const healthyNodes = this.nodes.filter(n => n.state === 'healthy');
-      if (healthyNodes.length < 2) return;
-
-      const startNode = healthyNodes[Math.floor(Math.random() * healthyNodes.length)];
-      let endNode = healthyNodes[Math.floor(Math.random() * healthyNodes.length)];
-      
-      // Ensure start and end are different
-      let attempts = 0;
-      while (endNode === startNode && attempts < 5) {
-        endNode = healthyNodes[Math.floor(Math.random() * healthyNodes.length)];
-        attempts++;
-      }
-
-      if (endNode !== startNode) {
-        const startIndex = this.nodes.indexOf(startNode);
-        const endIndex = this.nodes.indexOf(endNode);
+      // Rarely spawn packets
+      if (Math.random() > 0.98) {
+        const node = this.nodes[Math.floor(Math.random() * this.nodes.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.5 + Math.random() * 1;
         
         this.packets.push({
-          startNode: startIndex,
-          endNode: endIndex,
-          progress: 0,
-          speed: 0.008 + Math.random() * 0.004,
-          active: true
+          x: node.x,
+          y: node.y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          maxLife: 1
         });
       }
+    }
+
+    drawNode(node: NetworkNode) {
+      if (!this.ctx) return;
+
+      const pulse = 0.5 + Math.sin(this.time * 0.002 + node.pulse) * 0.3;
+      const opacity = 0.4 * pulse;
+
+      this.ctx.fillStyle = `rgba(79, 172, 254, ${opacity})`;
+      this.ctx.beginPath();
+      this.ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+      this.ctx.fill();
+
+      // Subtle glow
+      this.ctx.strokeStyle = `rgba(79, 172, 254, ${opacity * 0.3})`;
+      this.ctx.lineWidth = 1;
+      this.ctx.beginPath();
+      this.ctx.arc(node.x, node.y, node.radius + 4, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
+
+    drawConnection(node1: NetworkNode, node2: NetworkNode) {
+      if (!this.ctx) return;
+
+      const distance = Math.hypot(node2.x - node1.x, node2.y - node1.y);
+      const maxDist = 400;
+
+      if (distance > maxDist) return;
+
+      const opacity = (1 - distance / maxDist) * 0.1;
+
+      this.ctx.strokeStyle = `rgba(79, 172, 254, ${opacity})`;
+      this.ctx.lineWidth = 0.5;
+      this.ctx.beginPath();
+      this.ctx.moveTo(node1.x, node1.y);
+      this.ctx.lineTo(node2.x, node2.y);
+      this.ctx.stroke();
+    }
+
+    drawPackets() {
+      if (!this.ctx) return;
+
+      this.packets = this.packets.filter(p => {
+        p.life -= 0.02;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.life > 0) {
+          const opacity = p.life * 0.4;
+          
+          // Draw packet
+          this.ctx!.shadowColor = 'rgba(79, 172, 254, 0.5)';
+          this.ctx!.shadowBlur = 4;
+          this.ctx!.fillStyle = `rgba(79, 172, 254, ${opacity})`;
+          this.ctx!.beginPath();
+          this.ctx!.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+          this.ctx!.fill();
+          
+          this.ctx!.shadowColor = 'transparent';
+          return true;
+        }
+        return false;
+      });
     }
 
     animate = () => {
       if (!this.ctx) return;
 
-      // Clear canvas with subtle persistence
-      this.ctx.fillStyle = 'rgba(15, 15, 26, 0.05)';
+      this.time++;
+
+      // Very subtle clear - let trails fade naturally
+      this.ctx.fillStyle = 'rgba(10, 14, 39, 0.02)';
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      // Update router states
-      this.updateRouterStates();
-
-      // Spawn packets occasionally
-      this.packetSpawnTimer++;
-      if (this.packetSpawnTimer > 80) {
-        this.spawnPacket();
-        this.packetSpawnTimer = 0;
+      // Draw connections
+      for (let i = 0; i < this.nodes.length; i++) {
+        for (let j = i + 1; j < this.nodes.length; j++) {
+          this.drawConnection(this.nodes[i], this.nodes[j]);
+        }
       }
 
-      // Draw links
-      this.nodes.forEach(node => {
-        node.connections.forEach(connIndex => {
-          if (connIndex < this.nodes.length) {
-            this.drawLink(node, this.nodes[connIndex]);
-          }
-        });
-      });
-
-      // Update and draw packets
-      this.packets = this.packets.filter(packet => {
-        packet.progress += packet.speed;
-        if (packet.progress > 1.2) {
-          return false; // Remove packet
-        }
-        if (packet.progress >= 0 && packet.progress <= 1) {
-          this.drawPacket(packet);
-        }
-        return true;
-      });
-
       // Draw nodes
-      this.nodes.forEach(node => this.drawRouterIcon(node));
+      this.nodes.forEach(node => this.drawNode(node));
+
+      // Draw packets
+      this.spawnPacket();
+      this.drawPackets();
 
       this.animationId = requestAnimationFrame(this.animate);
     };
@@ -509,9 +206,9 @@
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      new NetworkTopologySimulator('networkCanvas');
+      new SubtleNetworkBackground('networkCanvas');
     });
   } else {
-    new NetworkTopologySimulator('networkCanvas');
+    new SubtleNetworkBackground('networkCanvas');
   }
 </script>
