@@ -37,11 +37,11 @@
   --text-muted: #a1a1aa;
   --text-light: #71717a;
 
-  /* Border Colors - Dark Mode */
-  --border-light: #27272a;
-  --border-base: #3f3f46;
-  --border-medium: #52525b;
-  --border-dark: #71717a;
+  /* Border Colors - Dark Mode (Technical) */
+  --border-light: #1e3a4f;
+  --border-base: #2d4a61;
+  --border-medium: #3d5a71;
+  --border-dark: #4d6a81;
   
   /* Shadow Colors - Dark Mode */
   --shadow-sm: rgba(0, 0, 0, 0.3);
