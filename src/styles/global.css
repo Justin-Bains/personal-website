@@ -378,7 +378,7 @@ h2 {
 .hero {
   text-align: center;
   padding: var(--space-16) var(--space-8);
-  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #0f172a 100%);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-16);
   border: 1px solid var(--border-base);
