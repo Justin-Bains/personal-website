@@ -1,0 +1,296 @@
+---
+// Dynamic network topology background with animated ping packets
+// Simulates a multi-hop routing network similar to GNS3/Packet Tracer diagrams
+---
+
+<div class="network-background-container">
+  <canvas id="networkCanvas" class="network-canvas"></canvas>
+</div>
+
+<style>
+  .network-background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(135deg, #1a2332 0%, #0f172a 50%, #1e2a3f 100%);
+    overflow: hidden;
+  }
+
+  .network-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  interface NetworkNode {
+    x: number;
+    y: number;
+    radius: number;
+    label: string;
+    color: string;
+    connections: number[];
+  }
+
+  interface PingPacket {
+    startNode: number;
+    endNode: number;
+    progress: number;
+    speed: number;
+  }
+
+  class NetworkTopologySimulator {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D | null;
+    nodes: NetworkNode[] = [];
+    packets: PingPacket[] = [];
+    animationId: number | null = null;
+    mousePos = { x: 0, y: 0 };
+
+    constructor(canvasId: string) {
+      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+      if (!canvas) return;
+
+      this.canvas = canvas;
+      this.ctx = canvas.getContext('2d');
+      this.resizeCanvas();
+      this.initializeNetwork();
+      this.startAnimation();
+      
+      window.addEventListener('resize', () => this.resizeCanvas());
+      document.addEventListener('mousemove', (e) => {
+        this.mousePos = { x: e.clientX, y: e.clientY };
+      });
+    }
+
+    resizeCanvas() {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    }
+
+    initializeNetwork() {
+      const centerX = this.canvas.width / 2;
+      const centerY = this.canvas.height / 2;
+      const nodeRadius = 8;
+
+      // Create a realistic network topology
+      // Core routers at the center
+      this.nodes = [
+        {
+          x: centerX,
+          y: centerY,
+          radius: nodeRadius + 2,
+          label: 'CORE-1',
+          color: '#0ea5e9',
+          connections: [1, 2, 3]
+        },
+        {
+          x: centerX - 280,
+          y: centerY - 150,
+          radius: nodeRadius,
+          label: 'EDGE-01',
+          color: '#38bdf8',
+          connections: [0, 4]
+        },
+        {
+          x: centerX + 280,
+          y: centerY - 150,
+          radius: nodeRadius,
+          label: 'EDGE-02',
+          color: '#38bdf8',
+          connections: [0, 5]
+        },
+        {
+          x: centerX,
+          y: centerY + 250,
+          radius: nodeRadius,
+          label: 'EDGE-03',
+          color: '#38bdf8',
+          connections: [0, 6]
+        },
+        {
+          x: centerX - 320,
+          y: centerY - 300,
+          radius: nodeRadius - 1,
+          label: 'CLIENT-01',
+          color: '#06b6d4',
+          connections: [1]
+        },
+        {
+          x: centerX + 320,
+          y: centerY - 300,
+          radius: nodeRadius - 1,
+          label: 'CLIENT-02',
+          color: '#06b6d4',
+          connections: [2]
+        },
+        {
+          x: centerX,
+          y: centerY + 380,
+          radius: nodeRadius - 1,
+          label: 'CLIENT-03',
+          color: '#06b6d4',
+          connections: [3]
+        }
+      ];
+
+      // Initialize ping packets
+      this.initializePackets();
+    }
+
+    initializePackets() {
+      this.packets = [];
+      // Create multiple packet flows
+      const flows = [
+        { start: 4, end: 0, speed: 0.015 },
+        { start: 5, end: 0, speed: 0.018 },
+        { start: 6, end: 0, speed: 0.012 },
+        { start: 0, end: 4, speed: 0.016 },
+        { start: 0, end: 5, speed: 0.014 },
+        { start: 0, end: 6, speed: 0.017 }
+      ];
+
+      flows.forEach(flow => {
+        this.packets.push({
+          startNode: flow.start,
+          endNode: flow.end,
+          progress: Math.random(),
+          speed: flow.speed
+        });
+      });
+    }
+
+    drawNode(node: NetworkNode) {
+      if (!this.ctx) return;
+
+      const ctx = this.ctx;
+      const distance = Math.hypot(
+        this.mousePos.x - node.x,
+        this.mousePos.y - node.y
+      );
+      const isHovered = distance < 100;
+      const glowIntensity = isHovered ? 0.4 : 0.2;
+
+      // Draw glow
+      ctx.shadowColor = node.color;
+      ctx.shadowBlur = 15 * glowIntensity;
+      ctx.fillStyle = node.color;
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw node border
+      ctx.shadowColor = 'transparent';
+      ctx.strokeStyle = node.color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.radius + 3, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Draw inner circle
+      ctx.fillStyle = 'rgba(14, 165, 233, 0.3)';
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.radius - 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    drawLink(from: NetworkNode, to: NetworkNode) {
+      if (!this.ctx) return;
+
+      const ctx = this.ctx;
+      ctx.strokeStyle = 'rgba(14, 165, 233, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    drawPacket(packet: PingPacket) {
+      if (!this.ctx) return;
+
+      const startNode = this.nodes[packet.startNode];
+      const endNode = this.nodes[packet.endNode];
+
+      if (!startNode || !endNode) return;
+
+      const x = startNode.x + (endNode.x - startNode.x) * packet.progress;
+      const y = startNode.y + (endNode.y - startNode.y) * packet.progress;
+
+      const ctx = this.ctx;
+      
+      // Packet trail
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Packet core
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowColor = 'transparent';
+    }
+
+    animate = () => {
+      if (!this.ctx) return;
+
+      // Clear canvas
+      this.ctx.fillStyle = 'rgba(26, 35, 50, 0.1)';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+      // Draw links
+      this.nodes.forEach(node => {
+        node.connections.forEach(connIndex => {
+          if (connIndex > this.nodes.length - 1) return;
+          this.drawLink(node, this.nodes[connIndex]);
+        });
+      });
+
+      // Update and draw packets
+      this.packets.forEach(packet => {
+        packet.progress += packet.speed;
+        if (packet.progress > 1.2) {
+          packet.progress = 0;
+        }
+        if (packet.progress >= 0 && packet.progress <= 1) {
+          this.drawPacket(packet);
+        }
+      });
+
+      // Draw nodes
+      this.nodes.forEach(node => this.drawNode(node));
+
+      this.animationId = requestAnimationFrame(this.animate);
+    };
+
+    startAnimation() {
+      this.animate();
+    }
+
+    stop() {
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+      }
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new NetworkTopologySimulator('networkCanvas');
+    });
+  } else {
+    new NetworkTopologySimulator('networkCanvas');
+  }
+</script>
