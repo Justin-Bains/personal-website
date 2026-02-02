@@ -2,16 +2,32 @@
 ---
 <section id="about">
   <h2>About Me</h2>
-  <div class="card">
+  <div class="card about-card">
     <p>
-      I'm a passionate Network Engineer and Cloud Professional with extensive experience in 
-      designing, implementing, and managing enterprise network infrastructure and cloud solutions. 
-      My expertise spans across Cisco technologies, AWS cloud services, and modern DevOps practices.
+      I'm a Network Engineer and Cloud Professional focused on designing, building, and managing
+      infrastructure from the ground up. My work centers on hands-on projects in my homelab, where
+      I've developed expertise across Cisco networking, Kubernetes orchestration, AWS cloud services,
+      and infrastructure automation.
     </p>
-    <p style="margin-top: 1rem;">
-      I hold multiple industry certifications and continuously expand my knowledge through 
-      hands-on projects and staying current with emerging technologies in networking, cloud computing, 
-      and software development.
+    <p class="about-description">
+      I hold multiple industry certifications (CCNA, Security+, Network+, GCP Associate Cloud Engineer)
+      and continuously deepen my knowledge through practical implementation and staying current with
+      emerging technologies in networking, cloud computing, and systems engineering.
     </p>
   </div>
 </section>
+
+<style>
+  .about-card {
+    max-width: 100%;
+  }
+
+  .about-card p {
+    line-height: var(--leading-loose);
+    color: var(--text-secondary);
+  }
+
+  .about-description {
+    margin-top: var(--space-6);
+  }
+</style>
