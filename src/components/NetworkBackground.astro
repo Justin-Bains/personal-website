@@ -1,6 +1,6 @@
 ---
-// Dynamic network topology background with animated ping packets
-// Simulates a multi-hop routing network similar to GNS3/Packet Tracer diagrams
+// Enhanced dynamic network topology background with router icons and LED status indicators
+// Simulates a complex multi-hop routing network similar to GNS3/Packet Tracer diagrams
 ---
 
 <div class="network-background-container">
@@ -8,6 +8,8 @@
 </div>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
+
   .network-background-container {
     position: fixed;
     top: 0;
@@ -15,7 +17,7 @@
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: linear-gradient(135deg, #1a2332 0%, #0f172a 50%, #1e2a3f 100%);
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
     overflow: hidden;
   }
 
@@ -27,13 +29,18 @@
 </style>
 
 <script>
+  type RouterState = 'healthy' | 'warning' | 'down' | 'recovering';
+
   interface NetworkNode {
     x: number;
     y: number;
     radius: number;
     label: string;
-    color: string;
+    state: RouterState;
+    stateTimer: number;
+    stateChangeInterval: number;
     connections: number[];
+    lastStateChange: number;
   }
 
   interface PingPacket {
@@ -41,6 +48,7 @@
     endNode: number;
     progress: number;
     speed: number;
+    active: boolean;
   }
 
   class NetworkTopologySimulator {
@@ -50,6 +58,7 @@
     packets: PingPacket[] = [];
     animationId: number | null = null;
     mousePos = { x: 0, y: 0 };
+    packetSpawnTimer = 0;
 
     constructor(canvasId: string) {
       const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -73,138 +82,287 @@
     }
 
     initializeNetwork() {
-      const centerX = this.canvas.width / 2;
-      const centerY = this.canvas.height / 2;
-      const nodeRadius = 8;
+      const w = this.canvas.width;
+      const h = this.canvas.height;
+      const nodeRadius = 12;
 
-      // Create a realistic network topology
-      // Core routers at the center
+      // Create a complex, distributed network topology across the entire viewport
       this.nodes = [
+        // Core routers (center cluster)
         {
-          x: centerX,
-          y: centerY,
+          x: w * 0.25,
+          y: h * 0.35,
           radius: nodeRadius + 2,
-          label: 'CORE-1',
-          color: '#0ea5e9',
-          connections: [1, 2, 3]
+          label: 'CORE-01',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 8000 + Math.random() * 4000,
+          connections: [4, 5, 6, 7],
+          lastStateChange: Date.now()
         },
         {
-          x: centerX - 280,
-          y: centerY - 150,
+          x: w * 0.75,
+          y: h * 0.35,
+          radius: nodeRadius + 2,
+          label: 'CORE-02',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 9000 + Math.random() * 4000,
+          connections: [4, 5, 6, 7],
+          lastStateChange: Date.now()
+        },
+        // Edge routers (perimeter)
+        {
+          x: w * 0.05,
+          y: h * 0.15,
           radius: nodeRadius,
           label: 'EDGE-01',
-          color: '#38bdf8',
-          connections: [0, 4]
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 7000 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
         },
         {
-          x: centerX + 280,
-          y: centerY - 150,
+          x: w * 0.95,
+          y: h * 0.15,
           radius: nodeRadius,
           label: 'EDGE-02',
-          color: '#38bdf8',
-          connections: [0, 5]
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 8500 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
         },
         {
-          x: centerX,
-          y: centerY + 250,
+          x: w * 0.05,
+          y: h * 0.85,
           radius: nodeRadius,
           label: 'EDGE-03',
-          color: '#38bdf8',
-          connections: [0, 6]
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 7500 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
         },
         {
-          x: centerX - 320,
-          y: centerY - 300,
+          x: w * 0.95,
+          y: h * 0.85,
+          radius: nodeRadius,
+          label: 'EDGE-04',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 9200 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
+        },
+        // Access layer routers
+        {
+          x: w * 0.15,
+          y: h * 0.5,
           radius: nodeRadius - 1,
-          label: 'CLIENT-01',
-          color: '#06b6d4',
-          connections: [1]
+          label: 'RTR-01',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 6500 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
         },
         {
-          x: centerX + 320,
-          y: centerY - 300,
+          x: w * 0.85,
+          y: h * 0.5,
           radius: nodeRadius - 1,
-          label: 'CLIENT-02',
-          color: '#06b6d4',
-          connections: [2]
+          label: 'RTR-02',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 7800 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
         },
         {
-          x: centerX,
-          y: centerY + 380,
+          x: w * 0.5,
+          y: h * 0.15,
           radius: nodeRadius - 1,
-          label: 'CLIENT-03',
-          color: '#06b6d4',
-          connections: [3]
+          label: 'RTR-03',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 8200 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
+        },
+        {
+          x: w * 0.5,
+          y: h * 0.85,
+          radius: nodeRadius - 1,
+          label: 'RTR-04',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 7300 + Math.random() * 3000,
+          connections: [0, 1],
+          lastStateChange: Date.now()
+        },
+        // End hosts (corners and edges)
+        {
+          x: w * 0.08,
+          y: h * 0.25,
+          radius: nodeRadius - 2,
+          label: 'HOST-01',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 12000 + Math.random() * 4000,
+          connections: [2],
+          lastStateChange: Date.now()
+        },
+        {
+          x: w * 0.92,
+          y: h * 0.25,
+          radius: nodeRadius - 2,
+          label: 'HOST-02',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 11000 + Math.random() * 4000,
+          connections: [3],
+          lastStateChange: Date.now()
+        },
+        {
+          x: w * 0.08,
+          y: h * 0.75,
+          radius: nodeRadius - 2,
+          label: 'HOST-03',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 10500 + Math.random() * 4000,
+          connections: [4],
+          lastStateChange: Date.now()
+        },
+        {
+          x: w * 0.92,
+          y: h * 0.75,
+          radius: nodeRadius - 2,
+          label: 'HOST-04',
+          state: 'healthy',
+          stateTimer: 0,
+          stateChangeInterval: 11500 + Math.random() * 4000,
+          connections: [5],
+          lastStateChange: Date.now()
         }
       ];
-
-      // Initialize ping packets
-      this.initializePackets();
     }
 
-    initializePackets() {
-      this.packets = [];
-      // Create multiple packet flows
-      const flows = [
-        { start: 4, end: 0, speed: 0.015 },
-        { start: 5, end: 0, speed: 0.018 },
-        { start: 6, end: 0, speed: 0.012 },
-        { start: 0, end: 4, speed: 0.016 },
-        { start: 0, end: 5, speed: 0.014 },
-        { start: 0, end: 6, speed: 0.017 }
-      ];
+    getStateColor(state: RouterState): string {
+      switch (state) {
+        case 'healthy': return '#4ade80'; // Vibrant green
+        case 'warning': return '#ea580c'; // Orange
+        case 'down': return '#ef4444'; // Red
+        case 'recovering': return '#f59e0b'; // Amber
+        default: return '#4ade80';
+      }
+    }
 
-      flows.forEach(flow => {
-        this.packets.push({
-          startNode: flow.start,
-          endNode: flow.end,
-          progress: Math.random(),
-          speed: flow.speed
-        });
+    updateRouterStates() {
+      const now = Date.now();
+      this.nodes.forEach(node => {
+        const timeSinceChange = now - node.lastStateChange;
+
+        if (timeSinceChange > node.stateChangeInterval) {
+          const random = Math.random();
+          if (random < 0.15) {
+            // Go down
+            node.state = 'down';
+            node.lastStateChange = now;
+            node.stateChangeInterval = 3000 + Math.random() * 2000;
+          } else if (node.state === 'down') {
+            // Enter warning/recovering
+            node.state = 'recovering';
+            node.lastStateChange = now;
+            node.stateChangeInterval = 2000;
+          } else if (node.state === 'recovering') {
+            // Warning state
+            node.state = 'warning';
+            node.lastStateChange = now;
+            node.stateChangeInterval = 1500;
+          } else if (node.state === 'warning') {
+            // Back to healthy
+            node.state = 'healthy';
+            node.lastStateChange = now;
+            node.stateChangeInterval = 8000 + Math.random() * 4000;
+          }
+        }
       });
     }
 
-    drawNode(node: NetworkNode) {
+    drawRouterIcon(node: NetworkNode) {
       if (!this.ctx) return;
 
       const ctx = this.ctx;
-      const distance = Math.hypot(
-        this.mousePos.x - node.x,
-        this.mousePos.y - node.y
-      );
-      const isHovered = distance < 100;
-      const glowIntensity = isHovered ? 0.4 : 0.2;
+      const s = node.radius;
+      const color = this.getStateColor(node.state);
 
-      // Draw glow
-      ctx.shadowColor = node.color;
-      ctx.shadowBlur = 15 * glowIntensity;
-      ctx.fillStyle = node.color;
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Draw node border
-      ctx.shadowColor = 'transparent';
-      ctx.strokeStyle = node.color;
+      // Router box/rack
+      ctx.shadowColor = color;
+      ctx.shadowBlur = node.state === 'healthy' ? 12 : 8;
+      
+      ctx.strokeStyle = color;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(node.x, node.y, node.radius + 3, 0, Math.PI * 2);
+      ctx.rect(node.x - s, node.y - s * 1.2, s * 2, s * 2.4);
       ctx.stroke();
 
-      // Draw inner circle
-      ctx.fillStyle = 'rgba(14, 165, 233, 0.3)';
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, node.radius - 2, 0, Math.PI * 2);
-      ctx.fill();
+      // LED indicators
+      const ledCount = 4;
+      const ledSpacing = (s * 2) / (ledCount + 1);
+      for (let i = 0; i < ledCount; i++) {
+        const ledX = node.x - s + ledSpacing * (i + 1);
+        const ledY = node.y - s * 0.8;
+
+        // LED background
+        ctx.fillStyle = 'rgba(20, 20, 30, 0.8)';
+        ctx.fillRect(ledX - 2, ledY - 2, 4, 4);
+
+        // LED glow based on state
+        let ledColor = color;
+        let glowIntensity = 0.6;
+
+        if (node.state === 'down') {
+          ledColor = '#ef4444';
+          glowIntensity = 0.8;
+        } else if (node.state === 'recovering') {
+          ledColor = '#f59e0b';
+          glowIntensity = 0.7;
+        } else if (node.state === 'warning') {
+          ledColor = '#ea580c';
+          glowIntensity = 0.7;
+        }
+
+        ctx.shadowColor = ledColor;
+        ctx.shadowBlur = 8 * glowIntensity;
+        ctx.fillStyle = ledColor;
+        ctx.fillRect(ledX - 2, ledY - 2, 4, 4);
+      }
+
+      // Label
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = 'rgba(209, 213, 219, 0.7)';
+      ctx.font = `10px 'Courier New', monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText(node.label, node.x, node.y + s * 1.6);
+
+      ctx.shadowColor = 'transparent';
     }
 
     drawLink(from: NetworkNode, to: NetworkNode) {
       if (!this.ctx) return;
 
       const ctx = this.ctx;
-      ctx.strokeStyle = 'rgba(14, 165, 233, 0.15)';
+      
+      // Determine link color based on either node's health
+      const linkColor = (from.state === 'healthy' && to.state === 'healthy') 
+        ? 'rgba(74, 222, 128, 0.15)' 
+        : 'rgba(239, 68, 68, 0.1)';
+
+      ctx.strokeStyle = linkColor;
       ctx.lineWidth = 1;
-      ctx.setLineDash([5, 5]);
+      ctx.setLineDash([4, 4]);
       ctx.beginPath();
       ctx.moveTo(from.x, from.y);
       ctx.lineTo(to.x, to.y);
@@ -213,7 +371,7 @@
     }
 
     drawPacket(packet: PingPacket) {
-      if (!this.ctx) return;
+      if (!this.ctx || !packet.active) return;
 
       const startNode = this.nodes[packet.startNode];
       const endNode = this.nodes[packet.endNode];
@@ -225,51 +383,114 @@
 
       const ctx = this.ctx;
       
-      // Packet trail
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 8;
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
+      // Packet trail with radial blur effect
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, 6);
+      gradient.addColorStop(0, 'rgba(74, 222, 128, 0.8)');
+      gradient.addColorStop(1, 'rgba(74, 222, 128, 0)');
+      
+      ctx.shadowColor = '#4ade80';
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = gradient;
       ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.arc(x, y, 6, 0, Math.PI * 2);
       ctx.fill();
 
       // Packet core
-      ctx.fillStyle = '#38bdf8';
+      ctx.fillStyle = '#4ade80';
       ctx.beginPath();
-      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
       ctx.fill();
 
+      // Arc shrinking from end to start
+      const arcProgress = 1 - packet.progress;
+      ctx.strokeStyle = `rgba(74, 222, 128, ${0.5 * arcProgress})`;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([2, 2]);
+      ctx.beginPath();
+      const angle = Math.atan2(endNode.y - startNode.y, endNode.x - startNode.x);
+      const arcRadius = 8;
+      ctx.arc(
+        endNode.x - Math.cos(angle) * arcRadius,
+        endNode.y - Math.sin(angle) * arcRadius,
+        arcRadius,
+        angle - Math.PI * 0.3,
+        angle + Math.PI * 0.3
+      );
+      ctx.stroke();
+      ctx.setLineDash([]);
+
       ctx.shadowColor = 'transparent';
+    }
+
+    spawnPacket() {
+      // Randomly select start and end nodes
+      const healthyNodes = this.nodes.filter(n => n.state === 'healthy');
+      if (healthyNodes.length < 2) return;
+
+      const startNode = healthyNodes[Math.floor(Math.random() * healthyNodes.length)];
+      let endNode = healthyNodes[Math.floor(Math.random() * healthyNodes.length)];
+      
+      // Ensure start and end are different
+      let attempts = 0;
+      while (endNode === startNode && attempts < 5) {
+        endNode = healthyNodes[Math.floor(Math.random() * healthyNodes.length)];
+        attempts++;
+      }
+
+      if (endNode !== startNode) {
+        const startIndex = this.nodes.indexOf(startNode);
+        const endIndex = this.nodes.indexOf(endNode);
+        
+        this.packets.push({
+          startNode: startIndex,
+          endNode: endIndex,
+          progress: 0,
+          speed: 0.008 + Math.random() * 0.004,
+          active: true
+        });
+      }
     }
 
     animate = () => {
       if (!this.ctx) return;
 
-      // Clear canvas
-      this.ctx.fillStyle = 'rgba(26, 35, 50, 0.1)';
+      // Clear canvas with subtle persistence
+      this.ctx.fillStyle = 'rgba(15, 15, 26, 0.05)';
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+      // Update router states
+      this.updateRouterStates();
+
+      // Spawn packets occasionally
+      this.packetSpawnTimer++;
+      if (this.packetSpawnTimer > 80) {
+        this.spawnPacket();
+        this.packetSpawnTimer = 0;
+      }
 
       // Draw links
       this.nodes.forEach(node => {
         node.connections.forEach(connIndex => {
-          if (connIndex > this.nodes.length - 1) return;
-          this.drawLink(node, this.nodes[connIndex]);
+          if (connIndex < this.nodes.length) {
+            this.drawLink(node, this.nodes[connIndex]);
+          }
         });
       });
 
       // Update and draw packets
-      this.packets.forEach(packet => {
+      this.packets = this.packets.filter(packet => {
         packet.progress += packet.speed;
         if (packet.progress > 1.2) {
-          packet.progress = 0;
+          return false; // Remove packet
         }
         if (packet.progress >= 0 && packet.progress <= 1) {
           this.drawPacket(packet);
         }
+        return true;
       });
 
       // Draw nodes
-      this.nodes.forEach(node => this.drawNode(node));
+      this.nodes.forEach(node => this.drawRouterIcon(node));
 
       this.animationId = requestAnimationFrame(this.animate);
     };
