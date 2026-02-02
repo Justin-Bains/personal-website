@@ -10,20 +10,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* Color Palette - Infrastructure Green & Blue */
-  --color-primary: #4ade80;
-  --color-primary-dark: #22c55e;
-  --color-primary-light: #86efac;
-  --color-primary-lighter: #bbf7d0;
+  /* Color Palette - Modern Cyan & Blue */
+  --color-primary: #0faff8;
+  --color-primary-dark: #0284c7;
+  --color-primary-light: #39d8ff;
+  --color-primary-lighter: #7dd3fc;
 
-  /* Color Palette - Secondary (Deep Blue) */
-  --color-secondary: #5478dd;
-  --color-secondary-dark: #3b5bdb;
-  --color-secondary-light: #7c93f2;
+  /* Color Palette - Secondary (Violet) */
+  --color-secondary: #a855f7;
+  --color-secondary-dark: #9333ea;
+  --color-secondary-light: #d8b4fe;
 
   /* Color Palette - Accent */
-  --color-accent: #ea580c;
-  --color-success: #4ade80;
+  --color-accent: #06b6d4;
+  --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
 
