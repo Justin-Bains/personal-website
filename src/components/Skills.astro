@@ -2,9 +2,9 @@
 ---
 <section id="skills">
   <h2>Core Skills</h2>
-  <div class="card">
-    <div style="margin-bottom: 1.5rem;">
-      <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Networking</h3>
+  <div class="card skills-card">
+    <div class="skill-category">
+      <h3 class="category-title">Networking</h3>
       <span class="badge tech-badge">LAN</span>
       <span class="badge tech-badge">WAN</span>
       <span class="badge tech-badge">Core Networking</span>
@@ -29,8 +29,8 @@
       <span class="badge tech-badge">Network Security</span>
       <span class="badge tech-badge">Wireshark</span>
     </div>
-    <div style="margin-bottom: 1.5rem;">
-      <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Security</h3>
+    <div class="skill-category">
+      <h3 class="category-title">Security</h3>
       <span class="badge tech-badge">IDS/IPS (Snort, Suricata)</span>
       <span class="badge tech-badge">SIEM (Splunk, Prometheus, Grafana, Loki)</span>
       <span class="badge tech-badge">mTLS</span>
@@ -40,8 +40,8 @@
       <span class="badge tech-badge">Network Policies</span>
       <span class="badge tech-badge">Hardened Kubernetes</span>
     </div>
-    <div style="margin-bottom: 1.5rem;">
-      <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Monitoring & Observability</h3>
+    <div class="skill-category">
+      <h3 class="category-title">Monitoring & Observability</h3>
       <span class="badge tech-badge">Prometheus</span>
       <span class="badge tech-badge">Grafana</span>
       <span class="badge tech-badge">Splunk</span>
@@ -54,8 +54,8 @@
       <span class="badge tech-badge">Open-source NMS</span>
       <span class="badge tech-badge">Test Equipment</span>
     </div>
-    <div style="margin-bottom: 1.5rem;">
-      <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Cloud & DevOps</h3>
+    <div class="skill-category">
+      <h3 class="category-title">Cloud & DevOps</h3>
       <span class="badge tech-badge">AWS</span>
       <span class="badge tech-badge">Microsoft Azure</span>
       <span class="badge tech-badge">Azure Active Directory (Entra ID)</span>
@@ -73,8 +73,8 @@
       <span class="badge tech-badge">ArgoCD</span>
       <span class="badge tech-badge">CI/CD</span>
     </div>
-    <div style="margin-bottom: 1.5rem;">
-      <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Programming & Scripting</h3>
+    <div class="skill-category">
+      <h3 class="category-title">Programming & Scripting</h3>
       <span class="badge tech-badge">Python</span>
       <span class="badge tech-badge">JavaScript</span>
       <span class="badge tech-badge">TypeScript</span>
@@ -90,8 +90,8 @@
       <span class="badge tech-badge">REST APIs</span>
       <span class="badge tech-badge">Automation</span>
     </div>
-    <div style="margin-bottom: 1.5rem;">
-      <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Frameworks & Tools</h3>
+    <div class="skill-category">
+      <h3 class="category-title">Frameworks & Tools</h3>
       <span class="badge tech-badge">Kubespray</span>
       <span class="badge tech-badge">Flask</span>
       <span class="badge tech-badge">React</span>
@@ -107,8 +107,8 @@
       <span class="badge tech-badge">Mininet</span>
       <span class="badge tech-badge">WireGuard</span>
     </div>
-    <div>
-      <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Databases & OS</h3>
+    <div class="skill-category">
+      <h3 class="category-title">Databases & OS</h3>
       <span class="badge tech-badge">MongoDB</span>
       <span class="badge tech-badge">SQLite</span>
       <span class="badge tech-badge">MySQL</span>
@@ -122,3 +122,42 @@
     </div>
   </div>
 </section>
+
+<style>
+  .skills-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .skill-category {
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border-base);
+  }
+
+  .skill-category:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .category-title {
+    color: var(--color-primary);
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+  }
+
+  .category-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 16px;
+    background: var(--color-primary);
+    margin-right: var(--space-3);
+    border-radius: 2px;
+  }
+</style>
