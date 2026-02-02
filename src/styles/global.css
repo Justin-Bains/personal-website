@@ -362,9 +362,9 @@ h2 {
 }
 
 .tech-badge {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: var(--color-primary);
+  background: rgba(96, 165, 250, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  color: #93c5fd;
 }
 
 /* Grid Layout */
