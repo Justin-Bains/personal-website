@@ -225,13 +225,25 @@ a:hover {
 /* Header */
 header {
   background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-base);
+  border-bottom: 2px solid var(--border-base);
   padding: var(--space-8) 0;
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
   backdrop-filter: blur(10px);
-  box-shadow: var(--shadow-default);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0.4;
 }
 
 header h1 {
