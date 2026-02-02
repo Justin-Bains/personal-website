@@ -43,13 +43,13 @@
   --border-medium: #52525b;
   --border-dark: #71717a;
   
-  /* Shadow Colors */
-  --shadow-sm: rgba(0, 0, 0, 0.05);
-  --shadow-base: rgba(0, 0, 0, 0.1);
-  --shadow-md: rgba(0, 0, 0, 0.15);
-  --shadow-lg: rgba(0, 0, 0, 0.2);
-  --shadow-primary: rgba(37, 99, 235, 0.1);
-  --shadow-primary-strong: rgba(37, 99, 235, 0.2);
+  /* Shadow Colors - Dark Mode */
+  --shadow-sm: rgba(0, 0, 0, 0.3);
+  --shadow-base: rgba(0, 0, 0, 0.5);
+  --shadow-md: rgba(0, 0, 0, 0.6);
+  --shadow-lg: rgba(0, 0, 0, 0.7);
+  --shadow-primary: rgba(96, 165, 250, 0.15);
+  --shadow-primary-strong: rgba(96, 165, 250, 0.3);
   
   /* Typography - Font Families */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
