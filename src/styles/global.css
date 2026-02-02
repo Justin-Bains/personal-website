@@ -50,8 +50,8 @@
   --shadow-base: rgba(0, 0, 0, 0.5);
   --shadow-md: rgba(0, 0, 0, 0.6);
   --shadow-lg: rgba(0, 0, 0, 0.7);
-  --shadow-primary: rgba(74, 222, 128, 0.15);
-  --shadow-primary-strong: rgba(74, 222, 128, 0.3);
+  --shadow-primary: rgba(15, 175, 248, 0.15);
+  --shadow-primary-strong: rgba(15, 175, 248, 0.3);
   
   /* Typography - Font Families */
   --font-sans: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
