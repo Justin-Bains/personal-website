@@ -54,8 +54,9 @@
   --shadow-primary-strong: rgba(96, 165, 250, 0.3);
   
   /* Typography - Font Families */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-sans: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-accent: 'Silkscreen', cursive;
   
   /* Typography - Font Sizes */
   --text-xs: 0.75rem;      /* 12px */
