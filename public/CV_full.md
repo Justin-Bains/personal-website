@@ -17,27 +17,9 @@ Intelligence, Algorithm Design and Data Abstraction, Mathematical
 Statistics, User Interface Design, Applied Linear Models, Sampling and
 Experimental Design
 
-::: paracol
-2
-
-# Certifications {#certifications .unnumbered}
-
--   **Cisco**
-    [CCNA](https://www.credly.com/badges/c5680f7f-c33e-4a3c-9d89-4071a9e02ac0/public_url)
-
--   **CompTIA**
-    [Security+](https://www.credly.com/badges/9cd8c888-cadf-4862-8e23-e60bcb0c50a3/public_url)
-
--   **CompTIA**
-    [Network+](https://www.credly.com/badges/3cbe077d-d11b-4f2c-b582-86599214301e/public_url)
-
--   **CompTIA**
-    [A+](https://www.credly.com/badges/42df380d-8763-4559-b2a2-b29f61ee34c6/public_url)
-
--   **GCP** [Associate Cloud
-    Engineer](https://www.credly.com/badges/049b3acd-ecfb-48d0-94a8-31be67829567/public_url)
-
 # Professional Summary {#professional-summary .unnumbered}
+
+------------------------------------------------------------------------
 
 Versatile IT professional transitioning from web development and
 programming into infrastructure, networking, and cloud operations roles.
@@ -51,14 +33,72 @@ with plans to complete the AZ-305 Azure Solutions Architect Expert
 certification. Seeking to leverage broad technical skills and hands-on
 experience to focus on IT operations, networking, and systems
 administration.
-:::
+
+# Certifications {#certifications .unnumbered}
+
+------------------------------------------------------------------------
+
+-   **Cisco:**
+    [CCNA](https://www.credly.com/badges/c5680f7f-c33e-4a3c-9d89-4071a9e02ac0/public_url)
+
+-   **CompTIA:**
+    [Security+](https://www.credly.com/badges/9cd8c888-cadf-4862-8e23-e60bcb0c50a3/public_url),
+    [Network+](https://www.credly.com/badges/3cbe077d-d11b-4f2c-b582-86599214301e/public_url),
+    [A+](https://www.credly.com/badges/42df380d-8763-4559-b2a2-b29f61ee34c6/public_url)
+
+-   **Google Cloud:** [Associate Cloud
+    Engineer](https://www.credly.com/badges/049b3acd-ecfb-48d0-94a8-31be67829567/public_url)
 
 # Experience {#experience .unnumbered}
 
 ------------------------------------------------------------------------
 
+**Technical Fullstack Consultant**, Logistics Startup **November 2025 --
+Present**
+
+-   Setting up cloud infrastructure and CI/CD pipelines for a logistics
+    startup to streamline operations and improve efficiency
+
+-   Designed and implemented scalable cloud architecture using Microsoft
+    Azure services, including Azure App Service, Azure SQL Database, and
+    Azure Functions
+
+-   Managed Azure Active Directory (Entra ID) for user authentication
+    and authorization, ensuring secure access to resources
+
+-   Configured secure hosting environments with SSL/TLS, automated
+    backups, and monitoring using Azure Monitor
+
+-   Established email systems using Microsoft 365, including custom
+    domain setup, user provisioning, and security configurations
+
+-   Developed fullstack web applications utilizing Astro framework,
+    ensuring responsive design and optimal performance
+
+-   Implemented IT best practices, including documentation, version
+    control with Git, and agile development methodologies
+
+**Freelance IT Infrastructure Consultant**, Self-Employed **April 2025
+-- November 2025**
+
+-   Delivered technical consulting services for Lion's Appliance Repair
+    and an emerging logistics startup, focusing on infrastructure
+    optimization, cloud integration, and network security
+
+-   Architected and built a comprehensive on-premise laboratory
+    environment to validate enterprise networking and security
+    configurations (Cisco, Kubernetes, Azure) before client deployment
+
+-   Achieved Cisco CCNA and GCP Associate Cloud Engineer certifications
+    through intensive full-time professional development and practical
+    application
+
+-   Designed secure network architectures implementing VLAN
+    segmentation, firewall hardening, and VPN tunnels, directly applying
+    advanced infrastructure concepts to solve business challenges
+
 **Cloud Infrastructure Monitor and Technical Support**, Lion's Appliance
-Repair **June 2024 -- Present**
+Repair and HVAC **June 2024 -- April 2025**
 
 -   Provide L2/L3 support for cloud infrastructure, resolving
     OpenProject tickets related to networking, security, and system
@@ -94,20 +134,23 @@ Repair **June 2024 -- Present**
 **Fullstack Developer**, Lion's Appliance Repair **August 2023 --
 November 2023**
 
+-   Designed and implemented automated billing pipelines with Google
+    Apps Scripts, reducing weekly manual processing time by 90%
+
+-   Established CI/CD workflows using GitHub Actions to automate
+    testing, build processes, and production deployments
+
+-   Developed internal tooling and employee portals using Python
+    (Django/Flask), streamlining operational workflows
+
+-   Integrated data processing pipelines using scikit-learn and Pillow
+    for automated image manipulation and analysis
+
 -   Developed a responsive company website with modern web stack: HTML,
     CSS, JavaScript, TypeScript, Node.js, Astro, and React
 
--   Automated billing processes with Google Apps Scripts, reducing
-    invoice generation time from 3 hours to 15 minutes weekly
-
--   Implemented CI/CD pipelines using GitHub Actions for automated
-    testing and deployment
-
--   Automated the creation and sending of invoices using Google Apps
-    Scripts, improving efficiency and accuracy in billing processes
-
--   Used scikit-learn for data preprocessing and model evaluation.
-    Processed and manipulated images using Pillow/PIL
+-   Engineered and deployed a full-stack web platform using Node.js,
+    React, and Astro, focusing on performance and SEO optimization
 
 -   Built web applications for employee landing pages using Python,
     Django and Flask, ensuring robust and maintainable code
@@ -115,14 +158,20 @@ November 2023**
 **Fullstack Developer**, Oakville Town Taxi **April 2020 -- October
 2020**
 
+-   Managed the full application lifecycle of a high-traffic booking
+    platform hosted on AWS S3, ensuring 99.9% uptime
+
+-   Hardened application security and optimized performance by
+    implementing AWS Secrets Manager, load balancing, and TLS encryption
+
+-   Architected automated deployment pipelines (CI/CD) using GitHub
+    Actions, eliminating manual release errors
+
 -   Led the development of a responsive website with AWS S3 using HTML,
     CSS, JavaScript, and NodeJS
 
 -   Enhanced site security, speed, and user experience via AWS Secrets
     Manager, load balancing, caching, compression, and encryption
-
--   Implemented CI/CD pipeline using GitHub Actions for automated
-    testing and deployment
 
 **IT Setup Assistant**, AA Taxi **June 2018 -- July 2018**
 
@@ -150,8 +199,8 @@ November 2023**
 
 ------------------------------------------------------------------------
 
-**AV Helper**, Robert Bateman High School (Grades 9--10) **September
-2016 -- June 2017**
+**AV Helper**, Robert Bateman High School (Grades 9-10) **September 2016
+-- June 2017**
 
 -   Assisted with setup, operation, and troubleshooting of audio-visual
     equipment for school assemblies, events, and presentations
@@ -177,19 +226,33 @@ November 2023**
 **Hybrid Server Cluster**
 
 -   Designed and deployed a cost-effective hybrid infrastructure using a
-    self-hosted Kubernetes cluster for computation, Azure Web App
-    Service for public access and Cloudflared tunnel for inter-network
-    communication with public resources
+    self-hosted Kubernetes cluster, Azure Web App Service, and
+    Cloudflared tunnels for secure inter-network communication
 
--   Implemented network isolation, firewall rules, and Fail2Ban for
-    security; automated deployment and configuration with Ansible
+-   Implemented enterprise networking: Cisco Catalyst 3650 switches with
+    VLANs/QoS, FreeRADIUS for 802.1X, and ISC Kea DHCP
+
+-   Architected a self-hosted observability stack (Prometheus, Grafana,
+    Loki) to replicate Azure Monitor, tracking hardware metrics (IPMI,
+    SNMP) and application logs
+
+-   Hardened security posture using CIS benchmarks for RHEL, AppArmor
+    for Debian, and Kubernetes NetworkPolicies for east-west traffic
+    segmentation
+
+-   Configured high-availability components: LACP for network
+    redundancy, redundant power supplies, and automated certificate
+    rotation via cert-manager
+
+-   Developed custom monitoring solutions: Energy efficiency tracking
+    (GFLOPS/watt), switch ASIC utilization, and custom SNMP exporters
 
 -   Rebuilt the Azure Monitor stack locally by self-hosting and
     integrating Prometheus, Grafana, and Loki for unified, multi-layer
     Kubernetes monitoring and alerting
 
 -   Configured automated certificate rotation for cluster components
-    using cert-manager with cloudflare TLS/SSL certificates and internal
+    using cert-manager with Cloudflare TLS/SSL certificates and internal
     CA for private services
 
 -   Streamlined log aggregation with Fluent Bit for parsing and
@@ -202,78 +265,27 @@ November 2023**
 -   Configured redundant power supplies and network paths using LACP for
     high availability
 
--   Instantiated High Availablility CoreDNS
+-   Instantiated High Availability CoreDNS for reliable service
+    discovery within the cluster
 
 -   Developed custom metrics exporters for monitoring switch health and
-    network throughput
+    network throughput via SNMP
 
 -   Enforced application segmentation through NetworkPolicy objects
-    governing east-west traffic
+    governing east-west traffic between microservices
 
 -   Implemented system-level controls: RHEL nodes with CIS benchmarks,
     Debian control plane with AppArmor profiles
 
--   Configured cloudflared tunnels with TCP stream termination at the
+-   Configured Cloudflared tunnels with TCP stream termination at the
     edge router before reaching NodePort services
 
 -   Extended Prometheus monitoring to track: Per-node power draw via
     IPMI BMC sensors, Wattage efficiency (GFLOPS per watt) for compute
-    workloads, Switch ASIC utilization via SNMP exporters
-
--   Monitor and maintain hybrid infrastructure: Cisco Catalyst 3650
-    switches via SNMPv3 and IMNI (tracking power/port stats),
-    RHEL/Debian servers using Prometheus/Grafana (CPU/RAM/disk/wattage),
-    k3s cluster health through OpenTelemetry metrics
-
--   Rebuilt the Azure Monitor stack locally by architecting and
-    deploying a self-hosted observability platform using Prometheus
-    (metrics), Grafana (visualization), and Loki (log aggregation)
-
--   Replicated Azure Monitor's multi-layer monitoring approach,
-    collecting and correlating metrics and logs from infrastructure,
-    Kubernetes control plane, and application workloads
-
--   Developed unified dashboards and alerting rules to provide
-    comprehensive visibility and actionable insights, similar to Azure's
-    managed monitoring solution
-
--   Integrated OpenTelemetry and custom exporters to extend monitoring
-    coverage and support advanced troubleshooting
+    workloads
 
 -   Implemented enterprise networking solutions: FreeRADIUS for 802.1X
-    device authentication, ISC Kea DHCP server with IP reservations,
-    Secure Cloudflare Tunnels with mTLS for Azure to k8s connectivity
-
--   Hardened systems following CIS benchmarks: RHEL compute nodes
-    (SELinux/firewalld), Debian control plane (AppArmor/minimal
-    install), Kubernetes (PodSecurityPolicies/NetworkPolicies)
-
--   Expanded cluster with Cisco Catalyst 3650 switches implementing
-    VLANs for network segmentation and QoS policies for traffic
-    prioritization
-
--   Configured redundant power supplies and network paths using LACP for
-    high availability and increased throughput
-
--   Developed custom metrics exporters for monitoring switch health and
-    network throughput
-
--   Enforced application segmentation through NetworkPolicy objects
-    governing east-west traffic
-
--   Implemented system-level controls: RHEL nodes with CIS benchmarks,
-    Debian control plane with AppArmor profiles
-
--   Extended Prometheus monitoring to track: Per-node power draw via
-    IPMI BMC sensors, Wattage efficiency (GFLOPS per watt) for compute
-    workloads, Switch ASIC utilization via SNMP exporters
-
--   Created energy monitoring system with Grafana dashboards tracking
-    device usage
-
--   Customized MIBs for tracking PoE budget utilization on switch ports
-
--   Correlated SNMP metrics with application performance in Grafana
+    device authentication, ISC Kea DHCP server with IP reservations
 
 **Residential Network Installation**
 
@@ -285,7 +297,7 @@ November 2023**
 -   Performed ETL (Extract, Transform, Load) on raw gameplay telemetry
     to ensure accurate data for modeling and analysis
 
--   Implemented statistical and forecasting models for in‑game economy
+-   Implemented statistical and forecasting models for in-game economy
     and player behaviour using Python and Pandas
 
 -   Built Grafana dashboards to visualize simulation results, KPIs, and
@@ -366,10 +378,16 @@ Node.js, Astro\
 **Operating Systems & Scripting:** Red Hat Enterprise Linux (RHEL),
 Debian, Windows Server, GNU/Linux\
 
+**Lab Hardware:** Cisco Catalyst 3650 Switches, Dell PowerEdge Servers,
+Raspberry Pi Clusters, Patch Panels, Structured Cabling (Cat6), UPS
+Systems\
+
+**Methodologies:** Agile, Scrum, Kanban, ITIL v4, DevOps, CI/CD, GitOps,
+Infrastructure as Code (IaC)\
+
 **Tools:** Git, Jira, Vanta, Postman, LaTeX, Mininet, WireGuard\
 
 **Technical Support:** Windows 10/11, Microsoft 365, laptop/desktop
 setup, imaging, peripheral configuration, troubleshooting
 hardware/software issues, onboarding/offboarding, Active Directory, user
 account management, ServiceNow, Jira, ticketing systems, ITIL principles
- 
