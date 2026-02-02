@@ -88,44 +88,8 @@ const structuredData = {
 
 
 
-<button id="darkModeToggle" aria-label="Toggle dark mode" style="position:fixed;top:1rem;right:1rem;z-index:1000;background:none;border:none;padding:0.5rem;cursor:pointer;" title="Toggle dark mode">
-  <svg id="sunIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-  <svg id="moonIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
-</button>
-
-<!-- All global styles and scripts for dark mode and print below -->
+<!-- All global styles and print styles below -->
 <style>
-  :root {
-    --bg-primary: #fff;
-    --bg-secondary: #f3f4f6;
-    --bg-tertiary: #e5e7eb;
-    --text-primary: #1e293b;
-    --text-muted: #64748b;
-    --color-primary: #2563eb;
-    --color-primary-dark: #1e40af;
-    --border-base: #d1d5db;
-    --radius-md: 16px;
-    --radius-base: 8px;
-    --space-2: 0.5rem;
-    --space-4: 1rem;
-    --space-6: 1.5rem;
-    --text-sm: 0.95rem;
-    --transition-all: 0.2s;
-    --hero-title-size: 2.2rem;
-    --hero-subtitle-size: 1.1rem;
-  }
-  html.dark {
-    --bg-primary: #18181b;
-    --bg-secondary: #232336;
-    --bg-tertiary: #232336;
-    --text-primary: #f3f4f6;
-    --text-muted: #a1a1aa;
-    --color-primary: #60a5fa;
-    --color-primary-dark: #2563eb;
-    --border-base: #27272a;
-    --hero-title-size: 2.2rem;
-    --hero-subtitle-size: 1.1rem;
-  }
     .hero {
       display: flex;
       flex-direction: column;
@@ -136,14 +100,14 @@ const structuredData = {
       background: none;
     }
     .compact-hero h1 {
-      font-size: var(--hero-title-size);
+      font-size: 2.2rem;
       margin-bottom: 0.3rem;
       color: var(--text-primary);
       font-weight: 700;
       letter-spacing: -1px;
     }
     .compact-hero p {
-      font-size: var(--hero-subtitle-size);
+      font-size: 1.1rem;
       margin-bottom: 0.7rem;
       color: var(--text-muted);
     }
@@ -153,11 +117,6 @@ const structuredData = {
       justify-content: center;
       flex-wrap: wrap;
     }
-  body, html {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background 0.2s, color 0.2s;
-  }
   @media print {
     body, html {
       background: #fff !important;
@@ -197,32 +156,6 @@ const structuredData = {
     min-height: 900px;
   }
 </style>
-<script is:inline>
-  if (typeof window !== 'undefined') {
-    window.addEventListener('DOMContentLoaded', () => {
-      const toggle = document.getElementById('darkModeToggle');
-      const sunIcon = document.getElementById('sunIcon');
-      const moonIcon = document.getElementById('moonIcon');
-      function setIcons() {
-        const isDark = document.documentElement.classList.contains('dark');
-        if (isDark) {
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'block';
-        } else {
-          sunIcon.style.display = 'block';
-          moonIcon.style.display = 'none';
-        }
-      }
-      if (toggle) {
-        toggle.onclick = () => {
-          document.documentElement.classList.toggle('dark');
-          setIcons();
-        };
-        setIcons();
-      }
-    });
-  }
-</script>
 
 
 <style>
