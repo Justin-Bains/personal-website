@@ -45,10 +45,11 @@ const articles = [
   margin-bottom: 2rem;
 }
 .blog-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
   justify-content: center;
+  align-items: start;
 }
 .blog-card {
   background: var(--bg-primary);

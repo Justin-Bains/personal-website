@@ -1,237 +1,94 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-
 import About from '../components/About.astro';
-import FeaturedProjects from '../components/FeaturedProjects.astro';
+import Contact from '../components/Contact.astro';
+// import FeaturedProjects from '../components/FeaturedProjects.astro';
 import Skills from '../components/Skills.astro';
 import Certifications from '../components/Certifications.astro';
 import Resume from '../components/Resume.astro';
 import Blog from '../components/Blog.astro';
-import Contact from '../components/Contact.astro';
 import GitHubRepos from '../components/GitHubRepos.astro';
 import NetworkTopology from '../components/NetworkTopology.astro';
+const title = "Jashandeep Bains - Portfolio";
+const description = "The personal portfolio website for Jashandeep Justin Bains, a Network Engineer, Cloud Professional, and Developer.";
 
-const title = "Jashandeep Justin Bains - Network Engineer & Cloud Professional";
-const description = "Professional portfolio showcasing my networking, cloud, and software development certifications, projects, and experience. CCNA, AWS Certified, and more.";
-
-// Structured Data for SEO (JSON-LD)
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Jashandeep Justin Bains",
-  "jobTitle": "Network Engineer",
+  "jobTitle": "Network Engineer, Cloud Professional, and Developer",
   "description": description,
   "url": "https://jjbly.uk",
   "sameAs": [
     "https://github.com/JashandeepJustinBains",
     "https://www.linkedin.com/in/jashandeep-bains-b2aab6192}"
   ],
-  "knowsAbout": [
-    "Networking",
-    "Cloud Computing",
-    "AWS",
-    "Cisco",
-    "Network Security",
-    "Software Development"
-  ]
+  "knowsAbout": ["Networking", "Routing", "Switching", "Cloud Computing", "Kubernetes", "AWS", "Cisco", "Linux", "Ansible"]
 };
 ---
 
 <BaseLayout title={title} description={description}>
-  <!-- SEO Structured Data -->
-  <head>
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://jjbly.uk" />
-    <meta property="og:image" content="/public/og-image.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="/public/og-image.png" />
-  </head>
   <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-  
-  <!-- Hero Section -->
-  <div class="hero compact-hero">
-    <h1>Welcome to My Portfolio</h1>
-    <p>Network Engineer | Cloud Professional | Developer</p>
-    <div class="hero-links">
-      <a href="#homelab" class="btn">Explore My Homelab</a>
-      <a href="#certifications" class="btn btn-secondary">View Certifications</a>
-      <a href="#resume" class="btn btn-secondary">Download Résumé</a>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>JASHANDEEP BAINS</h1>
+      <p>Network Engineer, Cloud Professional, and Developer</p>
     </div>
-  </div>
+  </section>
+
+  <section id="about">
+    <About />
+  </section>
 
 
-  <About />
+  
+  <section id="portfolio">
+    <h2>Portfolio</h2>
+    <div class="portfolio-grid">
+      </div>
+  </section>
+
+  <section id="contact">
+    <Contact />
+  </section>
+
+
   <Certifications />
-  <FeaturedProjects />
+  <!-- <FeaturedProjects /> -->
   <Skills />
-  <!-- Certifications Section -->
-
-  <!-- Network Topology -->
-  <NetworkTopology />
-
-
-
-  <!-- GitHub Projects -->
   <GitHubRepos />
-
-
-
-
   <Resume />
   <Blog />
 
-
-
-<button id="darkModeToggle" aria-label="Toggle dark mode" style="position:fixed;top:1rem;right:1rem;z-index:1000;background:none;border:none;padding:0.5rem;cursor:pointer;" title="Toggle dark mode">
-  <svg id="sunIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-  <svg id="moonIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
-</button>
-
-<!-- All global styles and scripts for dark mode and print below -->
-<style>
-  :root {
-    --bg-primary: #fff;
-    --bg-secondary: #f3f4f6;
-    --bg-tertiary: #e5e7eb;
-    --text-primary: #1e293b;
-    --text-muted: #64748b;
-    --color-primary: #2563eb;
-    --color-primary-dark: #1e40af;
-    --border-base: #d1d5db;
-    --radius-md: 16px;
-    --radius-base: 8px;
-    --space-2: 0.5rem;
-    --space-4: 1rem;
-    --space-6: 1.5rem;
-    --text-sm: 0.95rem;
-    --transition-all: 0.2s;
-    --hero-title-size: 2.2rem;
-    --hero-subtitle-size: 1.1rem;
-  }
-  html.dark {
-    --bg-primary: #18181b;
-    --bg-secondary: #232336;
-    --bg-tertiary: #232336;
-    --text-primary: #f3f4f6;
-    --text-muted: #a1a1aa;
-    --color-primary: #60a5fa;
-    --color-primary-dark: #2563eb;
-    --border-base: #27272a;
-    --hero-title-size: 2.2rem;
-    --hero-subtitle-size: 1.1rem;
-  }
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem 0 0.5rem 0;
-      margin-bottom: 1.5rem;
-      background: none;
-    }
-    .compact-hero h1 {
-      font-size: var(--hero-title-size);
-      margin-bottom: 0.3rem;
-      color: var(--text-primary);
-      font-weight: 700;
-      letter-spacing: -1px;
-    }
-    .compact-hero p {
-      font-size: var(--hero-subtitle-size);
-      margin-bottom: 0.7rem;
-      color: var(--text-muted);
-    }
-    .hero-links {
-      display: flex;
-      gap: 0.7rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-  body, html {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background 0.2s, color 0.2s;
-  }
-  @media print {
-    body, html {
-      background: #fff !important;
-      color: #000 !important;
-    }
-    header, nav, .hero, .btn, .projects-grid, .topology-container, .card:not(.resume-content), .resume-actions, .vpc-topology-grid, .topology-legend, .node-info-panel, .btn-small, .badge, .legend-items, .legend-item, .vpc-label, .vpc-node-link, .vpc-node-desc, .vpc-group:not(.resume-content) {
-      display: none !important;
-    }
-    .resume-content, .resume-display, #resume {
-      display: block !important;
-      background: #fff !important;
-      color: #000 !important;
-      box-shadow: none !important;
-      border: none !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      width: 100% !important;
-      min-width: 0 !important;
-    }
-    iframe {
-      width: 100vw !important;
-      height: 100vh !important;
-      border: none !important;
-    }
-  }
-  .resume-content {
-    max-width: 100%;
-  }
-  .resume-display {
-    padding: 2rem 0;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-base);
-    border-radius: var(--radius-md);
-    margin-top: 1rem;
-    max-width: 100%;
-    overflow-x: auto;
-    min-height: 900px;
-  }
-</style>
-<script is:inline>
-  if (typeof window !== 'undefined') {
-    window.addEventListener('DOMContentLoaded', () => {
-      const toggle = document.getElementById('darkModeToggle');
-      const sunIcon = document.getElementById('sunIcon');
-      const moonIcon = document.getElementById('moonIcon');
-      function setIcons() {
-        const isDark = document.documentElement.classList.contains('dark');
-        if (isDark) {
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'block';
-        } else {
-          sunIcon.style.display = 'block';
-          moonIcon.style.display = 'none';
-        }
-      }
-      if (toggle) {
-        toggle.onclick = () => {
-          document.documentElement.classList.toggle('dark');
-          setIcons();
-        };
-        setIcons();
-      }
-    });
-  }
-</script>
-
-
-<style>
-  .resume-display :global(hr) {
-    border: none;
-    border-top: 1px solid var(--border-base);
-    margin: 2rem 0;
-  }
-</style>
-
-<Contact />
 </BaseLayout>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 40vh;
+    background-image: url('https://images.unsplash.com/photo-1533134486753-c833f0ed4866?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position: center;
+    color: white;
+  }
+
+  .hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-content p {
+    font-size: 1.2rem;
+    font-family: var(--font-body);
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0;
+  }
+</style>

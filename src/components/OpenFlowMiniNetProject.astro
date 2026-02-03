@@ -1,24 +1,68 @@
 ---
-// OpenFlow & MiniNet Network Simulation Project Card
-import OpenFlowMiniNetSVG from './OpenFlowMiniNetSVG.astro';
 ---
-<div class="project-card" style="flex:1 1 100%;max-width:700px;">
-  <h3>OpenFlow & MiniNet Network Simulation</h3>
-  <p>A simulated SDN network using MiniNet and OpenFlow, with custom Python and shell scripts to define topology and flows. Visualized below.</p>
-  <a href="https://github.com/JashandeepJustinBains/NetworkingAndOpenFlowSimulation/tree/main/Mininet%20and%20OpenFlow" target="_blank" rel="noopener" class="btn btn-secondary">View Project →</a>
-  <OpenFlowMiniNetSVG />
+<div class="project-card">
+  <h4 class="font-accent">OpenFlow & MiniNet SDN</h4>
+  <p>Simulated a software-defined network using MiniNet and an OpenFlow controller to dynamically route traffic based on topology changes.</p>
+  <div class="tags">
+    <span class="tag">Python</span>
+    <span class="tag">SDN</span>
+    <span class="tag">OpenFlow</span>
+    <span class="tag">MiniNet</span>
+  </div>
+  <a href="#" target="_blank" rel="noopener noreferrer" class="btn">
+    View Project
+  </a>
 </div>
+
 <style>
 .project-card {
-  background: var(--bg-tertiary);
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 1.5rem 2rem;
-  min-width: 260px;
-  max-width: 700px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
+  padding: calc(var(--space-unit) * 1.5);
+  transition: all var(--transition-fast);
+  border-bottom: 1px solid var(--color-border);
+  flex-basis: 50%;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-accent-secondary);
+}
+
+.project-card h4 {
+  margin-bottom: var(--space-unit);
+  color: var(--color-accent-secondary);
+}
+
+.project-card p {
+  flex-grow: 1;
+  color: var(--color-text-secondary);
+}
+
+.tags {
+  margin: var(--space-unit) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--space-unit) / 2);
+}
+
+.tag {
+  background-color: #2c2c2c;
+  color: #a3a3a3;
+  padding: calc(var(--space-unit) / 4) calc(var(--space-unit) / 2);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-family: var(--font-primary);
+}
+
+.btn {
+  margin-top: auto;
+  text-align: center;
+  border-color: var(--color-accent-secondary);
+  color: var(--color-accent-secondary);
+}
+.btn:hover {
+    background-color: var(--color-accent-secondary);
+    color: var(--color-background);
 }
 </style>
