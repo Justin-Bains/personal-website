@@ -58,15 +58,20 @@ const certifications = [
 section {
     padding: 4rem 2rem;
 }
+
 h2 {
     font-size: 1.25rem;
     font-weight: 500;
     margin-bottom: 2rem;
+    text-align: center; /* Center the heading */
 }
+
 .cert-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  justify-content: center; /* Center items horizontally */
+  align-items: stretch; /* Ensures all cards in a row have the same height */
+  gap: 2rem; /* Provides consistent spacing between cards */
 }
 
 .cert-card {
@@ -75,28 +80,42 @@ h2 {
   align-items: center;
   text-align: center;
   text-decoration: none;
-  flex-basis: 20%;
+  flex: 1 1 280px; /* Allows cards to grow and shrink, with a preferred width of 280px */
+  max-width: 300px; /* Prevents cards from becoming too wide */
+  border: 1px solid var(--cert-border-color, #e0e0e0); /* Small border, customizable via CSS variable */
+  border-radius: 8px; /* Slightly rounded corners for a modern look */
+  padding: 1.5rem; /* Increased padding inside each card */
+  background-color: var(--cert-card-background, #ffffff); /* Card background, customizable via CSS variable */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
 
 .cert-card img {
   width: 100px;
   height: 100px;
   object-fit: contain;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem; /* Increased space between image and text */
 }
 
 .cert-info {
   display: flex;
   flex-direction: column;
+  width: 100%; /* Ensures info section takes full width of the card */
 }
 
 .cert-name {
   font-weight: 500;
   line-height: 1.4;
+  color: var(--cert-name-color, #333); /* Customizable text color for certification name */
 }
 
 .cert-issuer {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--cert-issuer-color, #666); /* Customizable text color for issuer */
+}
+
+.cert-card:hover {
+  transform: translateY(-5px); /* Lifts the card slightly on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhances shadow on hover */
 }
 </style>
