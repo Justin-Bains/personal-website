@@ -14,6 +14,14 @@ const certifications = [
     date: "2025",
     logo: "/Security+-svg.svg"
   },
+
+  {
+    name: "Google Associate Cloud Engineer",
+    issuer: "Google Cloud",
+    url: "https://www.credly.com/badges/049b3acd-ecfb-48d0-94a8-31be67829567/public_url",
+    date: "2024",
+    logo: "/associate-cloud-engineer-certification.png"
+  },
   {
     name: "CompTIA Network+",
     issuer: "CompTIA",
@@ -28,40 +36,67 @@ const certifications = [
     date: "2025",
     logo: "/A+-svg.svg"
   },
-  {
-    name: "Google Cloud Platform Associate Cloud Engineer",
-    issuer: "Google Cloud",
-    url: "https://www.credly.com/badges/049b3acd-ecfb-48d0-94a8-31be67829567/public_url",
-    date: "2024",
-    logo: "/associate-cloud-engineer-certification.png"
-  }
 ];
 ---
 
-<section id="certifications">
+<section>
   <h2>Certifications</h2>
-  <div class="grid">
+  <div class="cert-grid">
     {certifications.map((cert) => (
-      <div class="card cert-card">
-        <img src={cert.logo} alt={cert.name} class="cert-logo" />
-        <h3>{cert.name}</h3>
-        <p><strong>{cert.issuer}</strong></p>
-        <p>Issued: {cert.date}</p>
-        <a href={cert.url} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-          View Certificate →
-        </a>
-      </div>
+      <a href={cert.url} target="_blank" rel="noopener noreferrer" class="cert-card">
+        <img src={cert.logo} alt=`${cert.name} badge` loading="lazy" />
+        <div class="cert-info">
+          <span class="cert-name">{cert.name}</span>
+          <span class="cert-issuer">by {cert.issuer}</span>
+        </div>
+      </a>
     ))}
   </div>
 </section>
 
 <style>
-  .cert-card {
-    text-align: center;
-  }
-  
-  .cert-card a {
-    margin-top: 1rem;
-    display: inline-block;
-  }
+section {
+    padding: 4rem 2rem;
+}
+h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+.cert-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.cert-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  flex-basis: 20%;
+}
+
+.cert-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.cert-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cert-name {
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.cert-issuer {
+  font-size: 0.9rem;
+  color: #666;
+}
 </style>

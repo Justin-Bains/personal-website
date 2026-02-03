@@ -3,10 +3,11 @@ import '../styles/global.css';
 
 export interface Props {
   title: string;
-  description: string;
+  description?: string;
 }
 
-const { title, description } = Astro.props;
+const { title } = Astro.props;
+const description = Astro.props.description ?? "The personal portfolio website for Jashandeep Justin Bains, a Network Engineer, Cloud Professional, and Developer.";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -19,7 +20,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalURL} />
     
-    <!-- Open Graph / Facebook -->
+     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
@@ -36,21 +37,24 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script defer data-domain="jjbly.uk" src="https://plausible.io/js/plausible.js"></script>
   </head>
   <body>
-    <header>
-      <div class="container-short">
-        <h1>Jashandeep Justin Bains</h1>
-        <p class="subtitle">Network Engineer | Cloud Professional | Developer</p>
-      </div>
+    
+    <header class="header-content">
+        <a href="/" class="logo">JASHANDEEP BAINS</a>
+        <nav class="header-nav">
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
     </header>
     
-    <main class="container">
+    <main>
       <slot />
     </main>
     
     <footer>
-      <div class="container-short">
-        <p>&copy; {new Date().getFullYear()} Jashandeep Justin Bains. All rights reserved.</p>
-      </div>
+        <p>&copy; {new Date().getFullYear()} JASHANDEEP BAINS ❤️ in Canada 🇨🇦</p>
     </footer>
   </body>
 </html>

@@ -1,30 +1,61 @@
 ---
-// Hybrid Server Cluster Project Card
+import data from '../data/portfolio-data.json';
+const project = data.repository;
 ---
 <div class="project-card">
-  <img src="/public/hybrid-cluster.png" alt="Hybrid Server Cluster" class="project-image" loading="lazy" />
-  <h3>Hybrid Server Cluster</h3>
-  <p>Cost-effective hybrid infrastructure using self-hosted Kubernetes, Azure Web App Service, and Cloudflared tunnel.</p>
-  <a href="https://github.com/JashandeepJustinBains/VMStation" target="_blank" rel="noopener" class="btn btn-secondary">View Project →</a>
+  <h4 class="font-accent">{project.name}</h4>
+  <p>{project.description}</p>
+  <div class="tags">
+    {project.topics.slice(0, 5).map(topic => <span class="tag">{topic}</span>)}
+  </div>
+  <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn">
+    View on GitHub
+  </a>
 </div>
+
 <style>
 .project-card {
-  background: var(--bg-tertiary);
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 1.5rem 2rem;
-  min-width: 260px;
-  max-width: 340px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
+  padding: calc(var(--space-unit) * 1.5);
+  transition: all var(--transition-fast);
+  border-bottom: 1px solid var(--color-border);
+  flex-basis: 50%;
 }
-.project-image {
-  width: 100%;
-  max-width: 220px;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  background: #f3f4f6;
+
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-accent-primary);
+}
+
+.project-card h4 {
+  margin-bottom: var(--space-unit);
+  color: var(--color-accent-primary);
+}
+
+.project-card p {
+  flex-grow: 1;
+  color: var(--color-text-secondary);
+}
+
+.tags {
+  margin: var(--space-unit) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--space-unit) / 2);
+}
+
+.tag {
+  background-color: #2c2c2c;
+  color: #a3a3a3;
+  padding: calc(var(--space-unit) / 4) calc(var(--space-unit) / 2);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-family: var(--font-primary);
+}
+
+.btn {
+  margin-top: auto;
+  text-align: center;
 }
 </style>
