@@ -17,39 +17,38 @@ Intelligence, Algorithm Design and Data Abstraction, Mathematical
 Statistics, User Interface Design, Applied Linear Models, Sampling and
 Experimental Design
 
-# Professional Summary {#professional-summary .unnumbered}
-
-------------------------------------------------------------------------
-
-Versatile IT professional transitioning from web development and
-programming into infrastructure, networking, and cloud operations roles.
-Experienced in computer hardware, structured cabling, troubleshooting,
-and customer support, with a proven track record in delivering web and
-cloud solutions. Strong foundation in physical and virtual
-infrastructure, technical problem-solving, and supporting
-mission-critical systems in ticket-based environments. Currently
-pursuing the AZ-104 Microsoft Certified: Azure Administrator Associate,
-with plans to complete the AZ-305 Azure Solutions Architect Expert
-certification. Seeking to leverage broad technical skills and hands-on
-experience to focus on IT operations, networking, and systems
-administration.
+::: paracol
+2
 
 # Certifications {#certifications .unnumbered}
 
-------------------------------------------------------------------------
-
--   **Cisco:**
+-   **Cisco**
     [CCNA](https://www.credly.com/badges/c5680f7f-c33e-4a3c-9d89-4071a9e02ac0/public_url)
 
--   **CompTIA:**
-    [Security+](https://www.credly.com/badges/9cd8c888-cadf-4862-8e23-e60bcb0c50a3/public_url),
-    [Network+](https://www.credly.com/badges/3cbe077d-d11b-4f2c-b582-86599214301e/public_url),
+-   **CompTIA**
+    [Security+](https://www.credly.com/badges/9cd8c888-cadf-4862-8e23-e60bcb0c50a3/public_url)
+
+-   **CompTIA**
+    [Network+](https://www.credly.com/badges/3cbe077d-d11b-4f2c-b582-86599214301e/public_url)
+
+-   **CompTIA**
     [A+](https://www.credly.com/badges/42df380d-8763-4559-b2a2-b29f61ee34c6/public_url)
 
--   **Google Cloud:** [Associate Cloud
+-   **GCP** [Associate Cloud
     Engineer](https://www.credly.com/badges/049b3acd-ecfb-48d0-94a8-31be67829567/public_url)
 
-# Experience {#experience .unnumbered}
+# Professional Summary {#professional-summary .unnumbered}
+
+Network-focused IT professional with hands-on experience in network
+monitoring, troubleshooting, documentation, and incident/change
+management. Skilled in LAN/WAN, peering, VLANs, routing, switching, and
+security infrastructure (firewalls, VPNs, NAT). Proficient with Cisco
+devices, SNMP, and open-source monitoring tools. Strong communicator and
+team player, eager to transition into a Network Operations Centre (NOC)
+Analyst role.
+:::
+
+# Professional Experience {#professional-experience .unnumbered}
 
 ------------------------------------------------------------------------
 
@@ -98,7 +97,7 @@ Present**
     advanced infrastructure concepts to solve business challenges
 
 **Cloud Infrastructure Monitor and Technical Support**, Lion's Appliance
-Repair and HVAC **June 2024 -- April 2025**
+Repair **June 2024 -- April 2025**
 
 -   Provide L2/L3 support for cloud infrastructure, resolving
     OpenProject tickets related to networking, security, and system
@@ -223,7 +222,8 @@ November 2023**
 
 ------------------------------------------------------------------------
 
-**Hybrid Server Cluster**
+**Hybrid Infrastructure & Network Engineering Lab (CCNA & Azure Focus)**
+**April 2025 -- Present**
 
 -   Designed and deployed a cost-effective hybrid infrastructure using a
     self-hosted Kubernetes cluster, Azure Web App Service, and
@@ -266,7 +266,7 @@ November 2023**
     high availability
 
 -   Instantiated High Availability CoreDNS for reliable service
-    discovery within the cluster
+    discovery within the LAN
 
 -   Developed custom metrics exporters for monitoring switch health and
     network throughput via SNMP
@@ -283,9 +283,6 @@ November 2023**
 -   Extended Prometheus monitoring to track: Per-node power draw via
     IPMI BMC sensors, Wattage efficiency (GFLOPS per watt) for compute
     workloads
-
--   Implemented enterprise networking solutions: FreeRADIUS for 802.1X
-    device authentication, ISC Kea DHCP server with IP reservations
 
 **Residential Network Installation**
 
