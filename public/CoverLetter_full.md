@@ -1,13 +1,17 @@
+::: minipage
 Justin (Jashandeep) Bains
+:::
 
+::: minipage
  289-707-3333 $|$  <jashandeepjbains@gmail.com> $|$
  [GitHub](https://github.com/JashandeepJustinBains) $|$
  [justin-bains](https://www.linkedin.com/in/jashandeep-bains-b2aab6192)
 $|$  [Website](https://jjbly.uk)
+:::
 
 ------------------------------------------------------------------------
 
-2026-02-10
+2026-03-10
 
 **Hiring Manager**\
 **\[Company Name\]**\
