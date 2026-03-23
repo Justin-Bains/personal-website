@@ -1,12 +1,12 @@
 ::: minipage
-Justin (Jashandeep) Bains
+Jashandeep Justin Bains
 :::
 
 ::: minipage
  289-707-3333 $|$  <jashandeepjbains@gmail.com> $|$
- [GitHub](https://github.com/JashandeepJustinBains) $|$  [ justin-bains
-](https://www.linkedin.com/in/jashandeep-bains-b2aab6192) $|$  [ Website
-](https://jjbly.uk)
+ [GitHub](https://github.com/JashandeepJustinBains) $|$
+ [LinkedIn](https://www.linkedin.com/in/jashandeep-bains-b2aab6192) $|$
+ [Website](https://jjbly.uk)
 :::
 
 # Education {#education .unnumbered}
@@ -14,34 +14,26 @@ Justin (Jashandeep) Bains
 ------------------------------------------------------------------------
 
 **Bachelor of Computer Science (BCS), University of Waterloo**,
-Waterloo, ON **September 2019 -- August 2023** Relevant Coursework:
-Computer Networking, Computer Security and Privacy, Database Systems,
-Application Development, Operating Systems, Introduction to Artificial
-Intelligence, Algorithm Design and Data Abstraction, Mathematical
-Statistics, User Interface Design, Applied Linear Models, Sampling and
-Experimental Design
-
-::: paracol
-2
+Waterloo, ON **September 2019 -- August 2023**
 
 # Certifications {#certifications .unnumbered}
 
-- **Cisco**
-  [CCNA](https://www.credly.com/badges/c5680f7f-c33e-4a3c-9d89-4071a9e02ac0/public_url)
+------------------------------------------------------------------------
 
-- **CompTIA**
-  [Security+](https://www.credly.com/badges/9cd8c888-cadf-4862-8e23-e60bcb0c50a3/public_url)
-
-- **CompTIA**
-  [Network+](https://www.credly.com/badges/3cbe077d-d11b-4f2c-b582-86599214301e/public_url)
-
-- **CompTIA**
-  [A+](https://www.credly.com/badges/42df380d-8763-4559-b2a2-b29f61ee34c6/public_url)
-
-- **GCP** [Associate Cloud
-  Engineer](https://www.credly.com/badges/049b3acd-ecfb-48d0-94a8-31be67829567/public_url)
+[CompTIA
+A+](https://www.credly.com/badges/42df380d-8763-4559-b2a2-b29f61ee34c6/public_url)
+$|$ [CompTIA
+Network+](https://www.credly.com/badges/3cbe077d-d11b-4f2c-b582-86599214301e/public_url)
+$|$ [CompTIA
+Security+](https://www.credly.com/badges/9cd8c888-cadf-4862-8e23-e60bcb0c50a3/public_url)
+$|$
+[CCNA](https://www.credly.com/badges/c5680f7f-c33e-4a3c-9d89-4071a9e02ac0/public_url)
+$|$ [GCP Associate Cloud
+Engineer](https://www.credly.com/badges/049b3acd-ecfb-48d0-94a8-31be67829567/public_url)
 
 # Professional Summary {#professional-summary .unnumbered}
+
+------------------------------------------------------------------------
 
 Highly motivated IT professional with a strong foundation in networking
 and cloud infrastructure, eager to apply comprehensive technical skills
@@ -50,7 +42,6 @@ troubleshooting, incident management, and providing exceptional end-user
 support, coupled with expertise in Windows OS, Microsoft 365, Active
 Directory, and ticketing systems. Committed to efficient problem
 resolution and enhancing user satisfaction.
-:::
 
 # Professional Experience {#professional-experience .unnumbered}
 
