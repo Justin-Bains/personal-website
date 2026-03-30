@@ -14,7 +14,12 @@ Jashandeep Justin Bains
 ------------------------------------------------------------------------
 
 **Bachelor of Computer Science (BCS), University of Waterloo**,
-Waterloo, ON **September 2019 -- August 2023**
+Waterloo, ON **September 2019 -- August 2023**\
+Relevant Coursework: Computer Networking, Computer Security and Privacy,
+Database Systems, Application Development, Operating Systems,
+Introduction to Artificial Intelligence, Algorithm Design and Data
+Abstraction, Mathematical Statistics, User Interface Design, Applied
+Linear Models, Sampling and Experimental Design
 
 # Certifications {#certifications .unnumbered}
 
